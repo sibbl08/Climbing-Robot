@@ -1,0 +1,5 @@
+To-Do-List
+ - Place Climbing Holds
+ - add Collision in Simulation
+ - implement forward and inverse kinematics
+ - Computer Vision

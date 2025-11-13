@@ -4,7 +4,7 @@ import mujoco.viewer
 import time
 
 
-xml_path = (Path(__file__).parent / "Robot_V1" / "Robot_V1.xml").resolve()
+xml_path = (Path(__file__).parent / "Robot" / "Robot_V2.xml").resolve()
 
 model = mujoco.MjModel.from_xml_path(str(xml_path))
 data = mujoco.MjData(model)
