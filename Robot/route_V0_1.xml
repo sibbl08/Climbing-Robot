@@ -32,16 +32,16 @@
     <body name="Jug1Center_4" pos="0.4 0.0 1.4" quat="0.70710678 0.70710678 0.0 0.0">
         <geom type="mesh" name="Jug1Center_4 geom" mesh="Jug1Center" rgba="0 1 0 1" />
     </body>
-    <body name="Jug2Center_5" pos="0.3 0.0 1.2" quat="0.70710678 0.70710678 0.0 0.0">
+    <body name="Jug2Center_5" pos="0.1 0.0 1.2" quat="0.70710678 0.70710678 0.0 0.0">
         <geom type="mesh" name="Jug2Center_5 geom" mesh="Jug2Center" rgba="0.8 0.2 0.8 1" />
     </body>
-    <body name="Jug2Center_6" pos="-0.2 0.0 1.1" quat="0.70710678 0.70710678 0.0 0.0">
+    <body name="Jug2Center_6" pos="-0.1 0.0 1.2" quat="0.70710678 0.70710678 0.0 0.0">
         <geom type="mesh" name="Jug2Center_6 geom" mesh="Jug2Center" rgba="0.8 0.2 0.8 1" />
     </body>
   </worldbody>
   <asset>
     <mesh scale="0.001 0.001 0.001" name="Jug1Center" file="assets/hold_screw_v1.stl"/>
-    <mesh scale="0.001 0.001 0.001" name="Jug2Center" file="assets/hold_screw_v1.stl"/>
+    <mesh scale="0.75 0.75 0.75" name="Jug2Center" file="assets/jug3_center.obj"/>
   </asset>
 </mujoco>
 
