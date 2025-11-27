@@ -1,0 +1,192 @@
+<mujoco model="Robot_V2">
+    
+    <include file="wall.xml"/>
+    <include file="groundplane.xml"/>
+    <include file="route_V0_1.xml"/>
+
+    <option gravity="0 0 -9.81"/>
+    <statistic center="0 0 0.2" extent="0.6"/>
+    <compiler angle="radian" autolimits="true"/>
+
+    <visual>
+        <headlight diffuse="0.6 0.6 0.6" ambient="0.3 0.3 0.3" specular="0 0 0"/>
+        <rgba haze="0.15 0.25 0.35 1"/>
+        <global azimuth="160" elevation="-20"/>
+    </visual>
+
+    <default>
+        <position kp="21.1" ctrlrange="-1.5708 1.5708" forcerange="-5 5"/>
+        <joint damping="1.084" armature="0.045" frictionloss="0.03"/>
+        <geom solref="0.004 1" conaffinity="0" contype="1" />
+    </default>
+
+    <asset>
+        <mesh name="servo_shoulder_r" file="meshes/servo_shoulder_r.stl" scale="0.001 0.001 0.001" />
+        <mesh name="servo_elbow_r" file="meshes/servo_elbow_r.stl" scale="0.001 0.001 0.001" />
+        <mesh name="servo_wrist_r" file="meshes/servo_wrist_r.stl" scale="0.001 0.001 0.001" />
+        <mesh name="servo_shoulder_l" file="meshes/servo_shoulder_l.stl" scale="0.001 0.001 0.001" />
+        <mesh name="servo_elbow_l" file="meshes/servo_elbow_l.stl" scale="0.001 0.001 0.001" />
+        <mesh name="servo_wrist_l" file="meshes/servo_wrist_l.stl" scale="0.001 0.001 0.001" />
+        <mesh name="servo_hip_r" file="meshes/servo_hip_r.stl" scale="0.001 0.001 0.001" />
+        <mesh name="servo_knee_r" file="meshes/servo_knee_r.stl" scale="0.001 0.001 0.001" />
+        <mesh name="servo_ankle_r" file="meshes/servo_ankle_r.stl" scale="0.001 0.001 0.001" />
+        <mesh name="servo_hip_l" file="meshes/servo_hip_l.stl" scale="0.001 0.001 0.001" />
+        <mesh name="servo_knee_l" file="meshes/servo_knee_l.stl" scale="0.001 0.001 0.001" />
+        <mesh name="servo_ankle_l" file="meshes/servo_ankle_l.stl" scale="0.001 0.001 0.001" />
+        <mesh name="holder_shoulder_r" file="meshes/holder_shoulder_r.stl" scale="0.001 0.001 0.001" />
+        <mesh name="holder_hip_r" file="meshes/holder_hip_r.stl" scale="0.001 0.001 0.001" />
+        <mesh name="holder_shoulder_l" file="meshes/holder_shoulder_l.stl" scale="0.001 0.001 0.001" />
+        <mesh name="holder_hip_l" file="meshes/holder_hip_l.stl" scale="0.001 0.001 0.001" />
+        <mesh name="foot_r" file="meshes/foot_r.stl" scale="0.001 0.001 0.001" />
+        <mesh name="foot_l" file="meshes/foot_l.stl" scale="0.001 0.001 0.001" />
+        <mesh name="hand_l" file="meshes/hand_l.stl" scale="0.001 0.001 0.001" />
+        <mesh name="hand_r" file="meshes/hand_r.stl" scale="0.001 0.001 0.001" />
+        <mesh name="chest" file="meshes/chest.stl" scale="0.001 0.001 0.001" />
+        <mesh name="leg_r" file="meshes/leg_r.stl" scale="0.001 0.001 0.001" />
+        <mesh name="leg_l" file="meshes/leg_l.stl" scale="0.001 0.001 0.001" />
+        <mesh name="arm_r" file="meshes/arm_r.stl" scale="0.001 0.001 0.001" />
+        <mesh name="arm_l" file="meshes/arm_l.stl" scale="0.001 0.001 0.001" />
+    </asset>
+
+    <worldbody>
+        <light pos="-2 -1 3"/>
+        <light pos="2 -1 3"/>
+
+        <body name="chest" pos="0 -2 1" euler="1.5708 3.1416 0">
+            <freejoint/>
+            <geom name="chest_geom" type="mesh" mesh="chest" pos="0 0 0" euler="0 0 0" />
+            <inertial mass="1.0371964409893426" pos="-6.154643823667021e-16 0.06920609014293191 -0.06651191713099144" fullinertia="0.0022005828941300256 0.001911703348396235 0.0038805360831140508 -1.0856170875620538e-17 9.094071403781528e-18 7.851382324183798e-05" />
+            <body name="servo_shoulder_r" pos="0.08510384800005386 0.10224999417966689 -0.10154565551562668" euler="8.066873293846133e-16 2.674105658277389e-17 1.5707963267948957">
+                <geom name="servo_shoulder_r_geom" type="mesh" mesh="servo_shoulder_r" pos="0 0 0" euler="0 0 0" />
+                <inertial mass="0.25164687718092266" pos="0.016295528106545352 0.03288647170678953 0.04754491271418339" fullinertia="4.1434323908688564e-05 4.3822641116547046e-05 6.936512928157316e-05 1.9005141956607778e-06 -1.019704939194381e-10 -1.6884099912459335e-09" />
+                <body name="holder_shoulder_r" pos="0.026000006788908438 0.003703848000054446 0.04754565551562668" euler="-4.85722573273509e-17 -1.0530111373640533e-16 -1.5707963267948957">
+                    <joint name="servo_shoulder_r_Revolute_shoulder_r" type="hinge" axis="-0.9999999999999926 -1.3739009929736225e-15 1.834444479568715e-16" pos="-0.005000151131404997 -9.685743387196454e-10 2.1733933421428427e-17" />
+                    <geom name="holder_shoulder_r_geom" type="mesh" mesh="holder_shoulder_r" pos="0 0 0" euler="0 0 0" />
+                    <inertial mass="0.010544601791719448" pos="0.009355874138474062 0.0004871638530886924 -2.0284148534426228e-14" fullinertia="6.34848635614904e-06 2.450245952830301e-06 8.09841475599732e-06 -8.550002300756404e-08 2.4088222156000702e-18 -5.718425804405458e-18" />
+                    <body name="servo_elbow_r" pos="0.05200000678890826 0.03445384800005318 -0.04754565551562673" euler="2.3592239273284537e-16 9.611047805834256e-17 -3.141592653589793">
+                        <joint name="holder_shoulder_r_Revolute_elbow_r" type="hinge" axis="-4.891920202254542e-16 -0.9999999999999969 -2.038267541788963e-15" pos="0.0260001579203128 0.008703848968627385 0.04754565551562662" />
+                        <geom name="servo_elbow_r_geom" type="mesh" mesh="servo_elbow_r" pos="0 0 0" euler="0 0 0" />
+                        <inertial mass="0.2574774645033229" pos="0.016612363704313127 0.033334638470362915 0.04754288849972684" fullinertia="4.4354863086237193e-05 4.5722788413385285e-05 7.311602559772321e-05 3.6130695128470705e-07 7.027404485354541e-09 8.37545818337977e-09" />
+                        <body name="arm_r" pos="-0.014739849547087527 0.07441261372305562 0.10814084626118162" euler="1.5707963267948966 1.0030050886122002e-15 3.141592653589793">
+                            <geom name="arm_r_geom" type="mesh" mesh="arm_r" pos="0 0 0" euler="0 0 0" />
+                            <inertial mass="0.014959272223394856" pos="-0.014663802376273688 0.05044112811448154 0.03627000106520522" fullinertia="2.774489312775727e-06 1.7344941656482074e-05 1.6813156364472812e-05 9.105039402158229e-07 7.01029321081898e-07 -6.350760589741149e-07" />
+                            <body name="servo_wrist_r" pos="0.01376013776916512 0.019491342670994324 -0.014236889792624866" euler="8.687100385588212e-16 1.7900990639785042e-16 -3.0944702435426654e-16">
+                                <geom name="servo_wrist_r_geom" type="mesh" mesh="servo_wrist_r" pos="0 0 0" euler="0 0 0" />
+                                <inertial mass="0.2574774645033229" pos="0.016612363704313172 0.03333463847036302 0.04754288849972674" fullinertia="4.435486308623715e-05 4.572278841340197e-05 7.31160255977108e-05 3.6130695128463965e-07 7.027404490027921e-09 8.375458182592246e-09" />
+                                <body name="hand_r" pos="0.052003969200576705 0.03445409103885819 0.03789489855443083" euler="1.5707963267948963 4.265668762861111e-16 -3.441691376337998e-15">
+                                    <joint name="servo_wrist_r_Revolute_wrist_r" type="hinge" axis="-1.0755285551056284e-16 -1.0499307986219864e-15 -1.0000000000000002" pos="-0.02600411443714151 0.009650755992622103 0.025750242964297627" />
+                                    <geom name="hand_r_geom" type="mesh" mesh="hand_r" pos="0 0 0" euler="0 0 0" />
+                                    <inertial mass="0.030848799513025382" pos="0.007783403121881559 0.009702501928154403 0.00014736393201275795" fullinertia="8.81956185146118e-06 1.9314121694107392e-05 1.262924994035846e-05 4.6176244987052034e-08 1.8244616503161332e-07 -2.4026693365950913e-10" />
+                                </body>
+                            </body>
+                        </body>
+                    </body>
+                </body>
+            </body>
+            <body name="servo_shoulder_l" pos="-0.0851038480000543 0.10224999417966707 -0.006454344484372258" euler="-3.1415926535897922 -8.562238237168907e-16 -1.5707963267948972">
+                <geom name="servo_shoulder_l_geom" type="mesh" mesh="servo_shoulder_l" pos="0 0 0" euler="0 0 0" />
+                <inertial mass="0.25164687718092266" pos="0.016295528106545765 0.032886471706789704 0.047544912714183415" fullinertia="4.143432390868432e-05 4.382264111655064e-05 6.936512928157663e-05 1.9005141956698074e-06 -1.0197049030676784e-10 -1.6884099922245125e-09" />
+                <body name="holder_shoulder_l" pos="0.026000006788908153 0.0037038480000543485 0.047545655515627894" euler="-8.7805502446145395e-16 -1.224526230097757e-15 -1.5707963267948906">
+                    <joint name="servo_shoulder_l_Revolute_shoulder_l" type="hinge" axis="-0.9999999999999937 1.3739009929736241e-15 1.834444479568577e-16" pos="-0.004999848868593514 -9.685741029360304e-10 -5.806340412531305e-17" />
+                    <geom name="holder_shoulder_l_geom" type="mesh" mesh="holder_shoulder_l" pos="0 0 0" euler="0 0 0" />
+                    <inertial mass="0.010544601791719448" pos="0.009355874138474081 0.0004871638530886312 -2.0283040303424188e-14" fullinertia="6.348486356149706e-06 2.4502459528302876e-06 8.098414755997334e-06 -8.550002300758261e-08 2.4086277147651475e-18 -5.6852596026783394e-18" />
+                    <body name="servo_elbow_l" pos="0.05200000678890805 0.034453848000053605 -0.0475456555156276" euler="-8.833027236285006e-16 9.845738433756731e-16 -3.1415926535897927">
+                        <joint name="holder_shoulder_l_Revolute_elbow_l" type="hinge" axis="5.061923102900297e-15 -0.9999999999999964 1.3558205288504635e-15" pos="0.025999855657501014 0.008703848968627416 0.0475456555156274" />
+                        <geom name="servo_elbow_l_geom" type="mesh" mesh="servo_elbow_l" pos="0 0 0" euler="0 0 0" />
+                        <inertial mass="0.2574774645033229" pos="0.016612363704312835 0.03333463847036249 0.047542888499726745" fullinertia="4.435486308623729e-05 4.572278841338871e-05 7.311602559771286e-05 3.6130695128085845e-07 7.02740448477177e-09 8.375458179967238e-09" />
+                        <body name="arm_l" pos="-0.014249993978501916 0.04110384800005416 0.031545655441121714" euler="1.5707963267948966 -1.7711511378469536e-15 -6.425688722252942e-16">
+                            <geom name="arm_l_geom" type="mesh" mesh="arm_l" pos="0 0 0" euler="0 0 0" />
+                            <inertial mass="0.014959272223394843" pos="0.01417394604027813 0.005845937443433206 0.0029612353422038187" fullinertia="2.7744893127755057e-06 1.734494165648225e-05 1.681315636447202e-05 -9.105039402158244e-07 -7.010293210816762e-07 -6.350760589739469e-07" />
+                            <body name="servo_wrist_l" pos="-0.01424999333775153 -0.02510384792554831 0.047545655515627595" euler="3.141592653589788 3.5427653978568967e-15 -3.1415926535897922">
+                                <geom name="servo_wrist_l_geom" type="mesh" mesh="servo_wrist_l" pos="0 0 0" euler="0 0 0" />
+                                <inertial mass="0.2574774645033229" pos="0.016612363704312863 0.03333463847036265 0.04754288849972643" fullinertia="4.435486308625102e-05 4.5722788413398566e-05 7.311602559771698e-05 3.6130695128170357e-07 7.027404477632802e-09 8.375458175217951e-09" />
+                                <body name="hand_l" pos="0.052003969200577135 0.034454091038857715 0.057196412476823506" euler="1.570796326794897 -5.87460916291899e-16 3.14159265358979">
+                                    <joint name="servo_wrist_l_Revolute_wrist_l" type="hinge" axis="-1.006139616066555e-16 1.1134156389986632e-15 -1.0" pos="0.026003812174331013 0.009650755992622082 0.02575024303880317" />
+                                    <geom name="hand_l_geom" type="mesh" mesh="hand_l" pos="0 0 0" euler="0 0 0" />
+                                    <inertial mass="0.030848799513025372" pos="-0.0077834031218816414 0.009702501928154346 0.00014736393201276977" fullinertia="8.819561851461242e-06 1.9314121694106762e-05 1.2629249940357586e-05 -4.6176244987207676e-08 -1.8244616503169648e-07 -2.4026693364394004e-10" />
+                                </body>
+                            </body>
+                        </body>
+                    </body>
+                </body>
+            </body>
+            <body name="servo_hip_l" pos="-0.012249993211091983 -0.02510384800005424 -0.006454344484372446" euler="-3.1415926535897922 8.184583552414667e-17 -3.141592653589793">
+                <geom name="servo_hip_l_geom" type="mesh" mesh="servo_hip_l" pos="0 0 0" euler="0 0 0" />
+                <inertial mass="0.25164687718092266" pos="0.016295528106545266 0.032886471706789815 0.04754491271418347" fullinertia="4.14343239086805e-05 4.3822641116550516e-05 6.936512928157494e-05 1.9005141956614336e-06 -1.019704927676334e-10 -1.688409990454895e-09" />
+                <body name="holder_hip_l" pos="0.026000006788907994 0.0037038480000543216 0.04754565551562786" euler="-4.93038065763135e-29 5.073896230001146e-16 -1.5707963267948992">
+                    <joint name="servo_hip_l_Revolute_hip_l" type="hinge" axis="-0.9999999999999948 -2.7200464103316122e-15 1.9129648018150693e-15" pos="-0.005000000000000589 1.5113140608799378e-07 -1.7084637760431662e-16" />
+                    <geom name="holder_hip_l_geom" type="mesh" mesh="holder_hip_l" pos="0 0 0" euler="0 0 0" />
+                    <inertial mass="0.010544601791719448" pos="0.00935587413847412 0.0004871638530886394 -2.0294882202251904e-14" fullinertia="6.34848635614935e-06 2.4502459528302122e-06 8.098414755997378e-06 -8.550002300754484e-08 2.3858910497210515e-18 -5.705420326456437e-18" />
+                    <body name="servo_knee_l" pos="0.05200000678890827 0.034453848000054604 -0.04754565551562802" euler="-4.996003610813702e-16 -5.266093238208286e-16 -3.1415926535897887">
+                        <joint name="holder_hip_l_Revolute_knee_l" type="hinge" axis="-3.913536161803649e-15 -0.9999999999999932 7.635309013450376e-16" pos="0.026000006788908687 0.008703696868647972 0.047545655515627464" />
+                        <geom name="servo_knee_l_geom" type="mesh" mesh="servo_knee_l" pos="0 0 0" euler="0 0 0" />
+                        <inertial mass="0.2574774645033229" pos="0.016612363704313335 0.033334638470362575 0.04754288849972673" fullinertia="4.435486308624713e-05 4.572278841338061e-05 7.311602559771616e-05 3.613069512867939e-07 7.0274044873628315e-09 8.375458181244457e-09" />
+                        <body name="leg_l" pos="-0.014249993211092172 0.02510384800005451 0.04754565551562748" euler="3.1415926535897927 1.4491897763791472e-15 -3.141592653589792">
+                            <geom name="leg_l_geom" type="mesh" mesh="leg_l" pos="0 0 0" euler="0 0 0" />
+                            <inertial mass="0.007573473544414309" pos="-8.303059308252368e-05 0.0019976767595612788 4.510771326123453e-18" fullinertia="9.423772040442892e-07 1.0421044418625933e-05 9.497323791611843e-06 -1.0479830767132243e-09 6.773828043727313e-21 -7.777349180442533e-22" />
+                            <body name="servo_ankle_l" pos="0.014249993211091355 -0.02510384800005421 -0.047545655515627054" euler="-4.930977076740818e-16 1.5716544562938792e-15 -3.6082248300318643e-16">
+                                <geom name="servo_ankle_l_geom" type="mesh" mesh="servo_ankle_l" pos="0 0 0" euler="0 0 0" />
+                                <inertial mass="0.2574774645033229" pos="0.016612363704313182 0.03333463847036248 0.047542888499726765" fullinertia="4.435486308624736e-05 4.572278841337943e-05 7.311602559771681e-05 3.613069512825878e-07 7.02740448730552e-09 8.375458182378518e-09" />
+                                <body name="foot_l" pos="0.010100078056594715 -0.04206067753815112 -0.017659072726692805" euler="3.141592653589792 -1.8357572442211045e-16 1.5707963267948948">
+                                    <joint name="servo_ankle_l_Revolute_foot_l" type="hinge" axis="-0.999999999999993 2.151057110211224e-15 -1.8685721107463716e-15" pos="-0.05076437440679842 -0.015899928732313023 -0.06520472824231978" />
+                                    <geom name="foot_l_geom" type="mesh" mesh="foot_l" pos="0 0 0" euler="0 0 0" />
+                                    <inertial mass="0.03404575561853949" pos="-0.07636364185990703 -0.04908240330147303 -0.07479182637157743" fullinertia="1.9870742329617533e-05 2.3754778078632154e-05 1.6816072215482275e-05 -1.7045667418555242e-07 -4.924843258488585e-08 -2.7148403006368217e-06" />
+                                </body>
+                            </body>
+                        </body>
+                    </body>
+                </body>
+            </body>
+            <body name="servo_hip_r" pos="0.012249993211091855 -0.025103848000054576 -0.10154565551562698" euler="1.0226080958799306e-15 4.061884439058806e-17 -1.6653345369377242e-16">
+                <geom name="servo_hip_r_geom" type="mesh" mesh="servo_hip_r" pos="0 0 0" euler="0 0 0" />
+                <inertial mass="0.25164687718092266" pos="0.016295528106545342 0.03288647170678973 0.04754491271418334" fullinertia="4.143432390867696e-05 4.3822641116552006e-05 6.936512928157316e-05 1.9005141956645998e-06 -1.0197049284608836e-10 -1.6884099925788912e-09" />
+                <body name="holder_hip_r" pos="0.026000006788908122 0.003703848000054624 0.0475456555156268" euler="3.944304526105073e-31 -1.2177051777975595e-18 -1.5707963267948941">
+                    <joint name="servo_hip_r_Revolute_hip_r" type="hinge" axis="-0.9999999999999949 2.720046410331614e-15 -1.9129648018150224e-15" pos="-0.005000000000000701 -1.5113140555022966e-07 1.916631176743198e-16" />
+                    <geom name="holder_hip_r_geom" type="mesh" mesh="holder_hip_r" pos="0 0 0" euler="0 0 0" />
+                    <inertial mass="0.010544601791719448" pos="0.00935587413847412 0.00048716385308860685 -2.0272598077453577e-14" fullinertia="6.348486356149362e-06 2.4502459528301377e-06 8.098414755997294e-06 -8.55000230075739e-08 2.425243973754104e-18 -5.710784015899337e-18" />
+                    <body name="servo_knee_r" pos="0.05200000678890822 0.034453848000054126 -0.0475456555156269" euler="1.2325951644078268e-31 -1.2246467991473512e-16 3.141592653589792">
+                        <joint name="holder_hip_r_Revolute_knee_r" type="hinge" axis="5.134781488891336e-16 -0.9999999999999939 -1.222121079995048e-16" pos="0.026000006788908424 0.008703999131459333 0.04754565551562679" />
+                        <geom name="servo_knee_r_geom" type="mesh" mesh="servo_knee_r" pos="0 0 0" euler="0 0 0" />
+                        <inertial mass="0.2574774645033229" pos="0.01661236370431313 0.03333463847036259 0.047542888499726765" fullinertia="4.4354863086249594e-05 4.572278841338198e-05 7.311602559771624e-05 3.6130695128283124e-07 7.027404484465584e-09 8.375458181870801e-09" />
+                        <body name="leg_r" pos="-0.014249993211092101 0.029103848000054333 0.04754565551562745" euler="7.589159244630921e-17 1.0450451324730539e-15 3.141592653589792">
+                            <geom name="leg_r_geom" type="mesh" mesh="leg_r" pos="0 0 0" euler="0 0 0" />
+                            <inertial mass="0.007573473544414309" pos="-8.303059308252368e-05 0.0019976767595612744 4.286463111200641e-18" fullinertia="9.423772040442943e-07 1.0421044418625954e-05 9.497323791611884e-06 -1.047983076706448e-09 7.175248081199384e-21 -3.431700228900978e-21" />
+                            <body name="servo_ankle_r" pos="0.014249993211091577 0.02910384800005411 0.04754565551562705" euler="-3.141592653589793 -1.167509812387782e-15 -5.412337245047565e-16">
+                                <geom name="servo_ankle_r_geom" type="mesh" mesh="servo_ankle_r" pos="0 0 0" euler="0 0 0" />
+                                <inertial mass="0.2574774645033229" pos="0.016612363704313206 0.033334638470362554 0.04754288849972677" fullinertia="4.435486308624825e-05 4.5722788413380026e-05 7.311602559771757e-05 3.613069512864432e-07 7.027404484414823e-09 8.375458181920563e-09" />
+                                <body name="foot_r" pos="0.0646585979355812 0.03783079789548489 0.0641567983461595" euler="-4.4408920985006183e-16 8.066873293846096e-16 1.5707963267948966">
+                                    <joint name="servo_ankle_r_Revolute_foot_r" type="hinge" axis="0.999999999999993 -1.3739009929736227e-15 3.2187710185055463e-16" pos="-0.029126798764025064 0.038658591146673076 -0.016611142830531896" />
+                                    <geom name="foot_r_geom" type="mesh" mesh="foot_r" pos="0 0 0" euler="0 0 0" />
+                                    <inertial mass="0.03404575561853949" pos="-0.003527833573727978 0.005476116577512982 -0.026198240959789076" fullinertia="1.9870742329619796e-05 2.375477807863086e-05 1.6816072215479442e-05 1.704566741838279e-07 4.924843258502942e-08 -2.7148403006376726e-06" />
+                                </body>
+                            </body>
+                        </body>
+                    </body>
+                </body>
+            </body>
+        </body>
+    </worldbody>
+
+    <actuator>
+        <!-- Right Arm -->
+        <position name="servo_shoulder_r_act" joint="servo_shoulder_r_Revolute_shoulder_r"/>
+        <position name="elbow_r_act"          joint="holder_shoulder_r_Revolute_elbow_r" />
+        <position name="wrist_r_act"          joint="servo_wrist_r_Revolute_wrist_r" />
+
+        <!-- Left Arm -->
+        <position name="servo_shoulder_l_act" joint="servo_shoulder_l_Revolute_shoulder_l" />
+        <position name="elbow_l_act"          joint="holder_shoulder_l_Revolute_elbow_l" />
+        <position name="wrist_l_act"          joint="servo_wrist_l_Revolute_wrist_l" />
+
+        <!-- Right Leg -->
+        <position name="hip_r_act"   joint="servo_hip_r_Revolute_hip_r" />
+        <position name="knee_r_act"  joint="holder_hip_r_Revolute_knee_r" />
+        <position name="ankle_r_act" joint="servo_ankle_r_Revolute_foot_r" />
+
+        <!-- Left Leg -->
+        <position name="hip_l_act"   joint="servo_hip_l_Revolute_hip_l" />
+        <position name="knee_l_act"  joint="holder_hip_l_Revolute_knee_l" />
+        <position name="ankle_l_act" joint="servo_ankle_l_Revolute_foot_l" />
+    </actuator>
+
+</mujoco>

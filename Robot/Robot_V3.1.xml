@@ -1,4 +1,4 @@
-<mujoco model="Robot_V3">
+<mujoco model="Robot_V3.1">
     
     <include file="wall.xml"/>
     <include file="groundplane.xml"/>
@@ -32,8 +32,6 @@
         <mesh name="servo_hip_pitch_l" file="meshes/servo_hip_pitch_l.stl" scale="0.001 0.001 0.001" />
         <mesh name="servo_knee_pitch_r" file="meshes/servo_knee_pitch_r.stl" scale="0.001 0.001 0.001" />
         <mesh name="servo_knee_pitch_l" file="meshes/servo_knee_pitch_l.stl" scale="0.001 0.001 0.001" />
-        <mesh name="servo_ankle_pitch_r" file="meshes/servo_ankle_pitch_r.stl" scale="0.001 0.001 0.001" />
-        <mesh name="servo_ankle_pitch_l" file="meshes/servo_ankle_pitch_l.stl" scale="0.001 0.001 0.001" />
         <mesh name="servo_shoulder_pitch_r" file="meshes/servo_shoulder_pitch_r.stl" scale="0.001 0.001 0.001" />
         <mesh name="servo_elbow_pitch_r" file="meshes/servo_elbow_pitch_r.stl" scale="0.001 0.001 0.001" />
         <mesh name="servo_wrist_pitch_r" file="meshes/servo_wrist_pitch_r.stl" scale="0.001 0.001 0.001" />
@@ -51,17 +49,19 @@
         <mesh name="hip_joint_l" file="meshes/hip_joint_l.stl" scale="0.001 0.001 0.001" />
         <mesh name="wrist_joint_r" file="meshes/wrist_joint_r.stl" scale="0.001 0.001 0.001" />
         <mesh name="knee_joint_l" file="meshes/knee_joint_l.stl" scale="0.001 0.001 0.001" />
-        <mesh name="ankle_joint_l" file="meshes/ankle_joint_l.stl" scale="0.001 0.001 0.001" />
         <mesh name="hip_joint_r" file="meshes/hip_joint_r.stl" scale="0.001 0.001 0.001" />
         <mesh name="knee_joint_r" file="meshes/knee_joint_r.stl" scale="0.001 0.001 0.001" />
+        <mesh name="ankle_joint_l" file="meshes/ankle_joint_l.stl" scale="0.001 0.001 0.001" />
+        <mesh name="servo_ankle_roll_l" file="meshes/servo_ankle_roll_l.stl" scale="0.001 0.001 0.001" />
         <mesh name="ankle_joint_r" file="meshes/ankle_joint_r.stl" scale="0.001 0.001 0.001" />
+        <mesh name="servo_ankle_roll_r" file="meshes/servo_ankle_roll_r.stl" scale="0.001 0.001 0.001" />
         <mesh name="foot_r" file="meshes/foot_r.stl" scale="0.001 0.001 0.001" />
-        <mesh name="foot_l" file="meshes/foot_l.stl" scale="0.001 0.001 0.001" />
+        <mesh name="foot" file="meshes/foot.stl" scale="0.001 0.001 0.001" />
     </asset>
     <worldbody>
         <light directional="true" pos="-0.5 0.5 3" dir="0 0 -1" />
 
-        <body name="chest" pos="0 -0.11 0.18" euler="1.5708 0 0">
+        <body name="chest" pos="0 0 0" euler="1.5708 0 0">
             <freejoint/>
             <geom name="Chest_geom" type="mesh" mesh="Chest" pos="0 0 0" euler="0 0 0" />
             <inertial mass="0.7778298243226758" pos="-1.1116181606743858e-15 0.3029679253934266 -0.06434347713139629" fullinertia="0.0009215678074957225 0.0013132174134944975 0.002029370809638653 -3.2314396577744144e-17 9.060671285838158e-18 5.004118512455874e-05" />
@@ -147,7 +147,7 @@
                 <geom name="servo_hip_roll_r_geom" type="mesh" mesh="servo_hip_roll_r" pos="0 0 0" euler="0 0 0" />
                 <inertial mass="0.25164687718092266" pos="0.016295528106545536 0.03288647170678994 0.04754491271418351" fullinertia="4.143432390869137e-05 4.382264111655191e-05 6.936512928158031e-05 1.9005141956634593e-06 -1.0197049254412309e-10 -1.6884099916893918e-09" />
                 <body name="hip_joint_r" pos="0.01600000678890807 0.008703848000054215 0.037545655515627434" euler="3.141592653589792 2.2204460492502657e-16 4.733165431326058e-30">
-                    <joint name="servo_hip_roll_r_Revolute_hip_roll_r" type="hinge" axis="3.2033335732497615e-15 0.9999999999999991 1.2575275284524125e-16" pos="0.010000142830530722 -4.0885332704827e-07 -0.010000050104568566" />
+                    <joint name="servo_hip_roll_r_Revolute_hip_roll_r" type="hinge" axis="3.2033335732497615e-15 0.9999999999999991 1.2575275284524125e-16" pos="0.010000142830530722 -4.0885332704827e-07 -0.010000050104568566"/>
                     <geom name="hip_joint_r_geom" type="mesh" mesh="hip_joint_r" pos="0 0 0" euler="0 0 0" />
                     <inertial mass="0.04536367978101096" pos="0.015679169150879912 0.013944636154283093 -0.0015204553499205504" fullinertia="2.3284052485714365e-05 1.7057494663980123e-05 7.86001945088333e-06 -9.022824967104283e-07 -6.427073886900483e-07 -9.576858047656247e-07" />
                     <body name="servo_hip_pitch_r" pos="0.04445384800005388 -0.027545655515627595 0.01600000678890865" euler="-1.5707963267948966 2.636779683484725e-15 1.5707963267948877">
@@ -160,20 +160,20 @@
                             <body name="servo_knee_pitch_r" pos="0.008703848000054446 0.014499993211092157 0.033454344484373094" euler="7.822106558983417e-16 -1.2448375663609527e-14 1.5707963267948966">
                                 <geom name="servo_knee_pitch_r_geom" type="mesh" mesh="servo_knee_pitch_r" pos="0 0 0" euler="0 0 0" />
                                 <inertial mass="0.2574774645033229" pos="0.0166123637043134 0.033334638470363144 0.04754288849972702" fullinertia="4.435486308625019e-05 4.572278841338825e-05 7.311602559771137e-05 3.613069512850641e-07 7.027404486484428e-09 8.375458184319694e-09" />
-                                <body name="ankle_joint_r" pos="-0.014499993211091767 0.008703848000054375 0.03354565551562729" euler="1.568190022283029e-15 -3.591217469734362e-17 -1.5707963267948972">
-                                    <joint name="servo_knee_pitch_r_Revolute_knee_pitch_r" type="hinge" axis="0.9999999999999992 6.661338147750824e-16 -1.4083519214576268e-14" pos="1.428305315329825e-07 0.04050005010456824 0.013999591146672447" />
+                                <body name="ankle_joint_r" pos="0.026000006788908136 0.03445384800005429 0.08954565551562743" euler="-3.141592653589793 -1.5707963267948966 0">
+                                    <joint name="servo_knee_pitch_r_Revolute_knee_pitch_r" type="hinge" axis="1.4083519214576273e-14 1.0000000000000009 -3.1918911957972013e-16" pos="0.042000408853327696 0.02575014283053161 -5.0104568271326437e-08" />
                                     <geom name="ankle_joint_r_geom" type="mesh" mesh="ankle_joint_r" pos="0 0 0" euler="0 0 0" />
-                                    <inertial mass="0.16360616576335538" pos="-0.022760321024193387 0.03586658195093298 0.05131152865552525" fullinertia="0.00011514146451670163 0.00014583011440746056 9.679461264664648e-05 3.305366485096001e-06 -7.146298961246185e-06 1.2645936324562843e-05" />
-                                    <body name="servo_ankle_pitch_r" pos="0.008703848000055654 0.014499993211091713 0.033454344484373434" euler="-1.1877685627459379e-15 -3.000204251701887e-14 1.5707963267948974">
-                                        <geom name="servo_ankle_pitch_r_geom" type="mesh" mesh="servo_ankle_pitch_r" pos="0 0 0" euler="0 0 0" />
-                                        <inertial mass="0.2574774645033229" pos="0.016612363704313446 0.033334638470363075 0.04754288849972691" fullinertia="4.435486308625457e-05 4.572278841338912e-05 7.31160255977121e-05 3.6130695128464564e-07 7.0274044860441244e-09 8.375458182583667e-09" />
-                                        <body name="foot_r" pos="0.1346230568934768 0.05106499083058583 0.13620424666230074" euler="-1.5707963267948952 -5.551115123125905e-17 -1.762479051592462e-15">
-                                            <joint name="servo_ankle_pitch_r_Revolute_ankle_pitch_r" type="hinge" axis="3.608224830031792e-16 4.206911236563043e-14 -0.9999999999999986" pos="-0.10862300000000047 0.088659000000001 -0.04236128566106423" />
+                                    <inertial mass="0.013004386860980387" pos="0.016222670102532852 0.0003337489706512669 -1.7784989912318216e-14" fullinertia="8.369185492904518e-06 5.276273904760508e-06 1.2786255215626149e-05 -1.1187878600834759e-07 3.574033230241314e-18 -5.553704708178722e-18" />
+                                    <body name="servo_ankle_roll_r" pos="0.003703848000054304 -0.026000006788908108 -0.047545655515627464" euler="6.12323399573668e-17 -9.985317775372955e-16 1.5707963267948966">
+                                        <joint name="ankle_joint_r_Revolute_ankle_roll_r" type="hinge" axis="-1.4083519214576243e-14 -0.9999999999999989 -1.2246467991472438e-16" pos="0.02600014961944034 0.008703439146726895 0.047545605411059136" />
+                                        <geom name="servo_ankle_roll_r_geom" type="mesh" mesh="servo_ankle_roll_r" pos="0 0 0" euler="0 0 0" />
+                                        <inertial mass="0.25164687718092266" pos="0.01629552810654548 0.03288647170678995 0.04754491271418339" fullinertia="4.1434323908685243e-05 4.3822641116554446e-05 6.936512928157226e-05 1.9005141956632808e-06 -1.0197049212707885e-10 -1.6884099921167109e-09" />
+                                        <body name="foot_r" pos="0.03874141564596028 0.09882025730041609 0.035420655072317925" euler="-3.141592653589793 3.608224830031727e-16 -0.0">
                                             <geom name="foot_r_geom" type="mesh" mesh="foot_r" pos="0 0 0" euler="0 0 0" />
-                                            <geom name="foot_r_collision1" class="collision_geom" pos="-0.0965 0.0315 -0.017" size="0.036 0.002 0.025" />
-                                            <geom name="foot_r_collision2" class="collision_geom" pos="-0.062 0.026 -0.04" size="0.002 0.004 0.002" />
-                                            <geom name="foot_r_collision3" class="collision_geom" pos="-0.062 0.026 0.006" size="0.002 0.004 0.002" />
-                                            <inertial mass="0.03103773564018268" pos="-0.1023744092130386 0.045338918856236504 -0.016750979085956956" fullinertia="2.306410921035111e-05 1.967321129145183e-05 2.0404112815281717e-05 2.7301235006992727e-06 -2.7120355746764384e-08 1.8801607324658326e-07" />
+                                            <geom name="foot_r_collision1" class="collision_geom" pos="-0.023 0.0303 -0.00" size="0.025 0.002 0.036" />
+                                            <geom name="foot_r_collision2" class="collision_geom" pos="-0.001 0.025 0.034" size="0.002 0.0037 0.002" />
+                                            <geom name="foot_r_collision3" class="collision_geom" pos="-0.0455 0.025 0.034" size="0.002 0.0037 0.002" />
+                                            <inertial mass="0.23734477728703574" pos="-0.02299140865124862 0.04177381881969714 -0.005836234543501964" fullinertia="0.0001221754098314797 0.00014762634321217752 0.000133386441696402 -7.208102849820439e-13 3.0162348708040645e-13 1.760585129267067e-05" />
                                         </body>
                                     </body>
                                 </body>
@@ -196,23 +196,23 @@
                             <joint name="servo_hip_pitch_l_Revolute_hip_pitch_l" type="hinge" axis="0.999999999999999 1.318389841742371e-15 -5.053143722541764e-15" pos="1.42830531034208e-07 0.04050005010456955 0.01399959114667344" />
                             <geom name="knee_joint_l_geom" type="mesh" mesh="knee_joint_l" pos="0 0 0" euler="0 0 0" />
                             <inertial mass="0.16360616576335604" pos="0.02276032102419333 0.03586658195093294 0.05131152865586414" fullinertia="0.00011514146448919786 0.00014583011437149595 9.679461265510802e-05 -3.3053664850964597e-06 7.1462989610937975e-06 1.2645936324306226e-05" />
-                            <body name="servo_knee_pitch_l" pos="-0.006203848000054153 0.014499993211091872 0.12854565551562766" euler="-3.141592653589793 -1.0310206686310455e-15 -1.570796326794898">
+                            <body name="servo_knee_pitch_l" pos="-0.008703848000054304 0.014499993211091855 0.1285456555156277" euler="-3.141592653589793 -1.031020668631044e-15 -1.570796326794898">
                                 <geom name="servo_knee_pitch_l_geom" type="mesh" mesh="servo_knee_pitch_l" pos="0 0 0" euler="0 0 0" />
-                                <inertial mass="0.2574774645033229" pos="0.016612363704313456 0.03333463847036306 0.04754288849972684" fullinertia="4.435486308625728e-05 4.572278841338829e-05 7.311602559771288e-05 3.6130695128474733e-07 7.027404484738669e-09 8.37545818087294e-09" />
-                                <body name="ankle_joint_l" pos="-0.014499993211091678 0.008703848000054483 0.061545655515627455" euler="3.141592653589792 -8.130682919349429e-16 -1.570796326794893">
-                                    <joint name="servo_knee_pitch_l_Revolute_knee_pitch_l" type="hinge" axis="1.0 -3.205768983605135e-15 -5.441721781160588e-15" pos="1.4283053125213125e-07 0.04050005010456944 0.013999591146673372" />
+                                <inertial mass="0.2574774645033229" pos="0.01661236370431344 0.03333463847036306 0.04754288849972682" fullinertia="4.4354863086255544e-05 4.572278841338829e-05 7.311602559771288e-05 3.6130695128485575e-07 7.027404483871307e-09 8.37545818076452e-09" />
+                                <body name="ankle_joint_l" pos="0.019000006788908144 0.0414538480000542 0.0055456555156274765" euler="1.5707963267948966 -1.3877787807612296e-17 1.5707963267948968">
+                                    <joint name="servo_knee_pitch_l_Revolute_knee_pitch_l" type="hinge" axis="-5.02132377607343e-15 1.0987392599084971e-30 1.0" pos="0.0420004088533266 -0.007000050104569498 0.03274985716946856" />
                                     <geom name="ankle_joint_l_geom" type="mesh" mesh="ankle_joint_l" pos="0 0 0" euler="0 0 0" />
-                                    <inertial mass="0.16360616576335604" pos="0.022760321024193352 0.03586658195093297 0.05131152865586426" fullinertia="0.00011514146448919805 0.0001458301143714986 9.679461265510962e-05 -3.305366485096495e-06 7.146298961093559e-06 1.2645936324305634e-05" />
-                                    <body name="servo_ankle_pitch_l" pos="-0.008703848000054321 0.014499993211091997 0.12854565551562774" euler="3.1415926535897922 -7.276025182147515e-15 -1.5707963267948928">
-                                        <geom name="servo_ankle_pitch_l_geom" type="mesh" mesh="servo_ankle_pitch_l" pos="0 0 0" euler="0 0 0" />
-                                        <inertial mass="0.2574774645033229" pos="0.016612363704313363 0.033334638470363234 0.04754288849972695" fullinertia="4.4354863086250556e-05 4.57227884133911e-05 7.311602559771174e-05 3.61306951285538e-07 7.027404484708254e-09 8.375458181285683e-09" />
-                                        <body name="foot_l" pos="0.13462305689347726 0.05106499083058572 -0.04111293563104567" euler="1.5707963267948952 1.3877787807832181e-16 -9.436895709314083e-16">
-                                            <joint name="servo_ankle_pitch_l_Revolute_ankle_pitch_l" type="hinge" axis="-1.9428902930940163e-16 1.9428902930940358e-16 -0.9999999999999992" pos="-0.10862299999999984 0.08865899999999982 0.042360999999999906" />
-                                            <geom name="foot_l_geom" type="mesh" mesh="foot_l" pos="0 0 0" euler="0 0 0" />
-                                            <geom name="foot_l_collision1" class="collision_geom" pos="-0.0959 0.0315 0.0165" size="0.036 0.002 0.025" />
-                                            <geom name="foot_l_collision2" class="collision_geom" pos="-0.062 0.026 0.0395" size="0.002 0.004 0.002" />
-                                            <geom name="foot_l_collision3" class="collision_geom" pos="-0.062 0.026 -0.0065" size="0.002 0.004 0.002" />
-                                            <inertial mass="0.0310377356401822" pos="-0.10237440921308003 0.045338918856236456 0.016750979085957036" fullinertia="2.306410921485705e-05 1.9673211289964826e-05 2.040411281830145e-05 2.730123500753741e-06 2.7120355748187906e-08 -1.8801607324644808e-07" />
+                                    <inertial mass="0.013004386860980386" pos="0.016222670102532893 -0.006999999999982237 0.007333748970651239" fullinertia="8.36918549290239e-06 1.2786255215616807e-05 5.27627390475312e-06 -3.5769116535901894e-18 -1.1187878600832914e-07 5.54978407241135e-18" />
+                                    <body name="servo_ankle_roll_l" pos="0.003703848000054517 0.04054565551562741 -0.019000006788908202" euler="1.5707963267948966 -4.238446470109533e-15 1.5707963267948966">
+                                        <joint name="ankle_joint_l_Revolute_ankle_roll_l" type="hinge" axis="5.021323776073407e-15 -0.9999999999999998 -4.022123053910595e-15" pos="0.025999863958376553 0.008703439146727589 0.047545705620196964" />
+                                        <geom name="servo_ankle_roll_l_geom" type="mesh" mesh="servo_ankle_roll_l" pos="0 0 0" euler="0 0 0" />
+                                        <inertial mass="0.25164687718092266" pos="0.016295528106545564 0.03288647170678998 0.04754491271418355" fullinertia="4.143432390869064e-05 4.382264111655373e-05 6.936512928157316e-05 1.9005141956631076e-06 -1.0197049264088063e-10 -1.6884099913481341e-09" />
+                                        <body name="foot" pos="-0.007241402068143815 0.09882025730041599 0.05967065595893731" euler="4.022123053910596e-15 -1.7797583114599098e-16 3.141592653589793">
+                                            <geom name="foot_geom" type="mesh" mesh="foot" pos="0 0 0" euler="0 0 0" />
+                                            <geom name="foot_l_collision1" class="collision_geom" pos="-0.023 0.0303 -0.00" size="0.025 0.002 0.036" />
+                                            <geom name="foot_l_collision2" class="collision_geom" pos="-0.001 0.025 0.034" size="0.002 0.0037 0.002" />
+                                            <geom name="foot_l_collision3" class="collision_geom" pos="-0.0455 0.025 0.034" size="0.002 0.0037 0.002" />
+                                            <inertial mass="0.23734477728703574" pos="-0.022991408651248588 0.04177381881969715 -0.005836234543501963" fullinertia="0.00012217540983147868 0.00014762634321217752 0.00013338644169640074 -7.208101518667927e-13 3.0162346382984517e-13 1.7605851292670222e-05" />
                                         </body>
                                     </body>
                                 </body>
@@ -239,15 +239,15 @@
 
         <!-- Right Leg -->
         <position name="hip_roll_r"   joint="servo_hip_roll_r_Revolute_hip_roll_r" />
-        <position name="hip_pitch_r"  joint="servo_hip_pitch_r_Revolute_hip_pitch_r"/>
-        <position name="knee_pitch_r" joint="servo_knee_pitch_r_Revolute_knee_pitch_r" />
-        <position name="ankle_pitch_r" joint="servo_ankle_pitch_r_Revolute_ankle_pitch_r" />
+        <position name="hip_pitch_r"  joint="servo_hip_pitch_r_Revolute_hip_pitch_r" ctrlrange="-2.2 0"/>
+        <position name="knee_pitch_r" joint="servo_knee_pitch_r_Revolute_knee_pitch_r" ctrlrange="0 3.14"/>
+        <position name="ankle_roll_r" joint="ankle_joint_r_Revolute_ankle_roll_r" />
 
         <!-- Left Leg -->
         <position name="hip_roll_l"   joint="servo_hip_roll_l_Revolute_hip_roll_l" />
-        <position name="hip_pitch_l"  joint="servo_hip_pitch_l_Revolute_hip_pitch_l" />
-        <position name="knee_pitch_l" joint="servo_knee_pitch_l_Revolute_knee_pitch_l" />
-        <position name="ankle_pitch_l" joint="servo_ankle_pitch_l_Revolute_ankle_pitch_l" />
+        <position name="hip_pitch_l"  joint="servo_hip_pitch_l_Revolute_hip_pitch_l" ctrlrange="-2.2 0"/>
+        <position name="knee_pitch_l" joint="servo_knee_pitch_l_Revolute_knee_pitch_l" ctrlrange="-3.14 0" />
+        <position name="ankle_roll_l" joint="ankle_joint_l_Revolute_ankle_roll_l" />
     </actuator>
 
 </mujoco>
