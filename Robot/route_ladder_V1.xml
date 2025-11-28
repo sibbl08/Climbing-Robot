@@ -31,11 +31,11 @@
 
   <worldbody>
 
-  <body name="foot_l_start" pos="-0.12 0.0 0.09" quat="0.70710678 0.70710678 0.0 0.0">
+  <body name="foot_l_start" pos="-0.12 0.0 0.1" quat="0.70710678 0.70710678 0.0 0.0">
     <geom class="hold_visual" name="foot_l_start_geom" mesh="Jug1Center" rgba="0.8 0.2 0.8 1" />
     <geom class="hold_collision"/>
   </body>
-  <body name="foot_r_start" pos="0.12 0.0 0.09" quat="0.70710678 0.70710678 0.0 0.0">
+  <body name="foot_r_start" pos="0.12 0.0 0.1" quat="0.70710678 0.70710678 0.0 0.0">
     <geom class="hold_visual" name="foot_r_start_geom" mesh="Jug1Center" rgba="0 1 0 1" />
     <geom class="hold_collision"/>
   </body>
