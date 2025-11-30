@@ -12,9 +12,9 @@
 "servo_hip_yaw_l_Revolute_hip_yaw_l": (-100, 10),
 "servo_hip_pitch_l_Revolute_hip_pitch_l": (-120, 20),
 "servo_knee_pitch_l_Revolute_knee_pitch_l": (0, 140)
-"ankle_joint_l_Revolute_ankle_yaw_l": (-40, 40),
+"ankle_link_l_Revolute_ankle_yaw_l": (-40, 40),
 
 "servo_hip_yaw_r_Revolute_hip_yaw_r": (-100, 10),
 "servo_hip_pitch_r_Revolute_hip_pitch_r": (-120, 20),
 "servo_knee_pitch_r_Revolute_knee_pitch_r": (0, 140),
-"ankle_joint_r_Revolute_ankle_yaw_r": (-40, 40),
+"ankle_link_r_Revolute_ankle_yaw_r": (-40, 40)
