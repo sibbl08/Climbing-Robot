@@ -4,27 +4,26 @@ import numpy as np
 def initialize_robot_pose(model, data):
     # --- Initial joint angles ---
     initial_angles = {
-        
-        "servo_shoulder_yaw_l_Revolute_shoulder_yaw_l": np.deg2rad(5),
-        "servo_shoulder_pitch_l_Revolute_shoulder_pitch_l": 0.0,
-        "servo_elbow_pitch_l_Revolute_elbow_pitch_l": 0.0,
-        "servo_wrist_pitch_l_Revolute_wrist_pitch_l": 0.0,
-        
         "servo_shoulder_yaw_r_Revolute_shoulder_yaw_r": np.deg2rad(5),
         "servo_shoulder_pitch_r_Revolute_shoulder_pitch_r": 0.0,
         "servo_elbow_pitch_r_Revolute_elbow_pitch_r": 0.0,
         "servo_wrist_pitch_r_Revolute_wrist_pitch_r": 0.0,
 
-
-        "servo_hip_yaw_l_Revolute_hip_yaw_l": np.deg2rad(-90),
-        "servo_hip_pitch_l_Revolute_hip_pitch_l": np.deg2rad(-45),
-        "servo_knee_pitch_l_Revolute_knee_pitch_l": np.deg2rad(45),
-        "ankle_link_l_Revolute_ankle_yaw_l": np.deg2rad(35),
+        "servo_shoulder_yaw_l_Revolute_shoulder_yaw_l": np.deg2rad(5),
+        "servo_shoulder_pitch_l_Revolute_shoulder_pitch_l": 0.0,
+        "servo_elbow_pitch_l_Revolute_elbow_pitch_l": 0.0,
+        "servo_wrist_pitch_l_Revolute_wrist_pitch_l": 0.0,
 
         "servo_hip_yaw_r_Revolute_hip_yaw_r": np.deg2rad(-90),
-        "servo_hip_pitch_r_Revolute_hip_pitch_r": np.deg2rad(-45),
-        "servo_knee_pitch_r_Revolute_knee_pitch_r": np.deg2rad(45),
-        "ankle_link_r_Revolute_ankle_yaw_r": np.deg2rad(35),
+        "servo_hip_pitch_r_Revolute_hip_pitch_r": np.deg2rad(15),
+        "servo_knee_pitch_r_Revolute_knee_pitch_r": np.deg2rad(15),
+        "ankle_link_r_Revolute_ankle_yaw_r": np.deg2rad(40),
+
+        "servo_hip_yaw_l_Revolute_hip_yaw_l": np.deg2rad(-90),
+        "servo_hip_pitch_l_Revolute_hip_pitch_l": np.deg2rad(15),
+        "servo_knee_pitch_l_Revolute_knee_pitch_l": np.deg2rad(15),
+        "ankle_link_l_Revolute_ankle_yaw_l": np.deg2rad(40),
+
     }
 
     # set joint positions
@@ -37,7 +36,7 @@ def initialize_robot_pose(model, data):
             print(f"WARNING: Joint {joint_name} not found")
 
     # set position and orientation of the robot base
-    data.qpos[0:3] = [0, -0.3, 0.3]
+    data.qpos[0:3] = [0, -0.03, 0.36]
     quat = np.zeros(4)
     mujoco.mju_euler2Quat(quat, np.array([0.0, 0.0, np.deg2rad(180)]), 'xyz')
     data.qpos[3:7] = quat

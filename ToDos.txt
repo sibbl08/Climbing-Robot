@@ -1,5 +1,74 @@
-To-Do-List
- - implement forward and inverse kinematics
- - Computer Vision - Route Detection
- - Route Planing algorithm
- - keep improving robot design
+PROGRAM STRUCTURE OVERVIEW
+==========================
+
+        computervision.py 
+                ↓
+        path_planner.py
+            ├─> balance_checker.py 
+                ↓
+        execute_motion.py 
+            ├─ collision_checker.py 
+            ├─ ik.py 
+            |     ├─ fk.py
+            ├─ controller.py
+            ↓
+        main.py → updates simulation
+            ├─>init_robot.py
+
+
+DESCRIPTION OF PROGRAM PARTS
+============================
+
+computervision.py
+- Detects climbing holds using camera/sensor input.
+- Provides hold positions and orientations in WORLD coordinates.
+- Output is passed to path_planner.py.
+
+path_planner.py
+- Receives hold data from computervision.py.
+- Chooses the next grasp order (which limb moves where).
+- Defines high-level movement goals (target pose for a specific limb).
+- uses balance_checker.py to check balnce
+- Sends target pose and limb identifier to execute_motion.py.
+
+balance_checker.py
+- Checks if center of mass stays inside support region of fixed limbs.
+- Used by path_planner.py make sure, that planned path is possible.
+
+execute_motion.py
+- Central motion control module.
+- Receives target pose + limb from path_planner.py.
+- Calls IK to compute required joint movement.
+- Calls collision_checker to prevent self/wall/hold collisions.
+- calculates in what order the joints have to be moved in order to reach the goal position without
+  collision (movement of multiple limbs at the same time is possible i.e. pulling the whole body upwards)
+- Uses controller.py to smoothly execute motion in simulation.
+- Sends updated joint commands to main.py.
+
+
+collision_checker.py
+- Predicts collisions between robot limbs, wall, and holds.
+- Validates movement feasibility for execute_motion.py.
+
+ik.py
+- Computes new joint angles to reach target pose for a specific limb.
+- Uses fk.py to evaluate current pose.
+- Returns updated joint configuration to execute_motion.py.
+
+fk.py
+- Provides forward kinematics (joint state → end-effector pose).
+- Used by ik.py and optionally by execute_motion.py for validation.
+
+controller.py
+- Converts target joint angles into smooth joint commands.
+- Applies PID/damping to avoid teleportation and enable natural motion.
+- Output forwarded to main.py for simulation.
+
+main.py
+- Runs MuJoCo simulation loop.
+- Receives motor/joint commands from execute_motion.py / controller.py.
+- Updates simulation state and calls init_robot.py at startup.
+
+init_robot.py
+- Initializes robot pose before simulation begins.
+- Sets robot base and joints to a starting climbing-ready configuration.

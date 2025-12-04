@@ -5,8 +5,8 @@
     <!-- Collision Class -->
     <default class="hold_collision">
       <geom type="box"
-            pos="0 -0.028 0.012"
-            size="0.03 0.03 0.002"
+            pos="0 -0.013 0.012"
+            size="0.03 0.015 0.002"
             contype="1" conaffinity="1"
             rgba="1 0 0 1"
             solimp="0.99 0.99 0.01"
@@ -24,18 +24,18 @@
 
 
   <asset>
-    <mesh scale="0.4 0.4 0.4" name="Jug1Center" file="assets/jug3_center.obj"/>
+    <mesh scale="0.4 0.3 0.4" name="Jug1Center" file="assets/jug3_center.obj"/>
   </asset>
 
   
 
   <worldbody>
 
-  <body name="foot_l_start" pos="-0.12 0.0 0.1" quat="0.70710678 0.70710678 0.0 0.0">
+  <body name="foot_l_start" pos="-0.09 0.0 0.1" quat="0.70710678 0.70710678 0.0 0.0">
     <geom class="hold_visual" name="foot_l_start_geom" mesh="Jug1Center" rgba="0.8 0.2 0.8 1" />
     <geom class="hold_collision"/>
   </body>
-  <body name="foot_r_start" pos="0.12 0.0 0.1" quat="0.70710678 0.70710678 0.0 0.0">
+  <body name="foot_r_start" pos="0.09 0.0 0.1" quat="0.70710678 0.70710678 0.0 0.0">
     <geom class="hold_visual" name="foot_r_start_geom" mesh="Jug1Center" rgba="0 1 0 1" />
     <geom class="hold_collision"/>
   </body>
@@ -47,51 +47,51 @@
     <geom class="hold_visual" name="hand_r_start_geom" mesh="Jug1Center" rgba="0 1 0 1" />
     <geom class="hold_collision"/>
   </body>
-  <body name="Jug1Center_5" pos="-0.12 0.0 0.2" quat="0.70710678 0.70710678 0.0 0.0">
+  <body name="Jug1Center_5" pos="-0.12 0.0 0.17" quat="0.70710678 0.70710678 0.0 0.0">
     <geom class="hold_visual" name="Jug1Center_5 geom" mesh="Jug1Center" rgba="0.8 0.2 0.8 1" />
     <geom class="hold_collision"/>
   </body>
-  <body name="Jug1Center_6" pos="0.12 0.0 0.25" quat="0.70710678 0.70710678 0.0 0.0">
+  <body name="Jug1Center_6" pos="0.12 0.0 0.22" quat="0.70710678 0.70710678 0.0 0.0">
     <geom class="hold_visual" name="Jug1Center_6 geom" mesh="Jug1Center" rgba="0 1 0 1" />
     <geom class="hold_collision"/>
   </body>
-  <body name="Jug1Center_7" pos="-0.12 0.0 0.3" quat="0.70710678 0.70710678 0.0 0.0">
+  <body name="Jug1Center_7" pos="-0.12 0.0 0.27" quat="0.70710678 0.70710678 0.0 0.0">
     <geom class="hold_visual" name="Jug1Center_7 geom" mesh="Jug1Center" rgba="0.8 0.2 0.8 1" />
     <geom class="hold_collision"/>
   </body>
-  <body name="Jug1Center_8" pos="0.12 0.0 0.35" quat="0.70710678 0.70710678 0.0 0.0">
+  <body name="Jug1Center_8" pos="0.12 0.0 0.32" quat="0.70710678 0.70710678 0.0 0.0">
     <geom class="hold_visual" name="Jug1Center_8 geom" mesh="Jug1Center" rgba="0 1 0 1" />
     <geom class="hold_collision"/>
   </body>
-  <body name="Jug1Center_9" pos="-0.12 0.0 0.4" quat="0.70710678 0.70710678 0.0 0.0">
+  <body name="Jug1Center_9" pos="-0.12 0.0 0.37" quat="0.70710678 0.70710678 0.0 0.0">
     <geom class="hold_visual" name="Jug1Center_9 geom" mesh="Jug1Center" rgba="0.8 0.2 0.8 1" />
     <geom class="hold_collision"/>
   </body>
-  <body name="Jug1Center_10" pos="0.12 0.0 0.45" quat="0.70710678 0.70710678 0.0 0.0">
+  <body name="Jug1Center_10" pos="0.12 0.0 0.42" quat="0.70710678 0.70710678 0.0 0.0">
     <geom class="hold_visual" name="Jug1Center_10 geom" mesh="Jug1Center" rgba="0 1 0 1"/>
     <geom class="hold_collision"/>
   </body>
-  <body name="Jug1Center_11" pos="-0.12 0.0 0.5" quat="0.70710678 0.70710678 0.0 0.0">
+  <body name="Jug1Center_11" pos="-0.12 0.0 0.47" quat="0.70710678 0.70710678 0.0 0.0">
     <geom class="hold_visual" name="Jug1Center_11 geom" mesh="Jug1Center" rgba="0.8 0.2 0.8 1" />
     <geom class="hold_collision"/>
   </body>
-  <body name="Jug1Center_12" pos="0.12 0.0 0.55" quat="0.70710678 0.70710678 0.0 0.0">
+  <body name="Jug1Center_12" pos="0.12 0.0 0.52" quat="0.70710678 0.70710678 0.0 0.0">
     <geom class="hold_visual" name="Jug1Center_12 geom" mesh="Jug1Center" rgba="0 1 0 1" />
     <geom class="hold_collision"/>
   </body>
-  <body name="Jug1Center_13" pos="-0.12 0.0 0.6" quat="0.70710678 0.70710678 0.0 0.0">
+  <body name="Jug1Center_13" pos="-0.12 0.0 0.57" quat="0.70710678 0.70710678 0.0 0.0">
     <geom class="hold_visual" name="Jug1Center_13 geom" mesh="Jug1Center" rgba="0.8 0.2 0.8 1" />
     <geom class="hold_collision"/>
   </body>
-  <body name="Jug1Center_14" pos="0.12 0.0 0.65" quat="0.70710678 0.70710678 0.0 0.0">
+  <body name="Jug1Center_14" pos="0.12 0.0 0.62" quat="0.70710678 0.70710678 0.0 0.0">
     <geom class="hold_visual" name="Jug1Center_14 geom" mesh="Jug1Center" rgba="0 1 0 1" />
     <geom class="hold_collision"/>
   </body>
-  <body name="Jug1Center_15" pos="-0.12 0.0 0.7" quat="0.70710678 0.70710678 0.0 0.0">
+  <body name="Jug1Center_15" pos="-0.12 0.0 0.67" quat="0.70710678 0.70710678 0.0 0.0">
     <geom class="hold_visual" name="Jug1Center_15 geom" mesh="Jug1Center" rgba="0.8 0.2 0.8 1" />
     <geom class="hold_collision"/>
   </body>
-  <body name="Jug1Center_16" pos="0.12 0.0 0.75" quat="0.70710678 0.70710678 0.0 0.0">
+  <body name="Jug1Center_16" pos="0.12 0.0 0.72" quat="0.70710678 0.70710678 0.0 0.0">
     <geom class="hold_visual" name="Jug1Center_16 geom" mesh="Jug1Center" rgba="0 1 0 1"/>
     <geom class="hold_collision"/>
   </body>
