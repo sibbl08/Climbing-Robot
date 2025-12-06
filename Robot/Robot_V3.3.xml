@@ -4,7 +4,7 @@
     <include file="groundplane.xml"/>
     <include file="route_ladder_V1.xml"/>
 
-    <option gravity="0 0 0"/>
+    <option gravity="0 0 -9.81"/>
     <statistic center="0 0 0.2" extent="0.6"/>
     <compiler angle="radian" autolimits="true"/>
 
@@ -238,6 +238,7 @@
                 </body>
             </body>
         </body>
+        <!-- Target marker for debugging -->
         <body name="target_marker" pos="0 0.0 0" mocap="true" euler="0 0 0">
             <geom type="sphere" size="0.01" rgba="1 0 1 1"/>
         </body>

@@ -14,15 +14,15 @@ def initialize_robot_pose(model, data):
         "servo_elbow_pitch_l_Revolute_elbow_pitch_l": 0.0,
         "servo_wrist_pitch_l_Revolute_wrist_pitch_l": 0.0,
 
-        "servo_hip_yaw_r_Revolute_hip_yaw_r": np.deg2rad(-90),
-        "servo_hip_pitch_r_Revolute_hip_pitch_r": np.deg2rad(15),
-        "servo_knee_pitch_r_Revolute_knee_pitch_r": np.deg2rad(15),
-        "ankle_link_r_Revolute_ankle_yaw_r": np.deg2rad(40),
-
         "servo_hip_yaw_l_Revolute_hip_yaw_l": np.deg2rad(-90),
         "servo_hip_pitch_l_Revolute_hip_pitch_l": np.deg2rad(15),
         "servo_knee_pitch_l_Revolute_knee_pitch_l": np.deg2rad(15),
         "ankle_link_l_Revolute_ankle_yaw_l": np.deg2rad(40),
+
+        "servo_hip_yaw_r_Revolute_hip_yaw_r": np.deg2rad(-90),
+        "servo_hip_pitch_r_Revolute_hip_pitch_r": np.deg2rad(15),
+        "servo_knee_pitch_r_Revolute_knee_pitch_r": np.deg2rad(15),
+        "ankle_link_r_Revolute_ankle_yaw_r": np.deg2rad(40),
 
     }
 
