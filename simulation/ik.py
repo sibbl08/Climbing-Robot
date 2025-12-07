@@ -1,24 +1,8 @@
 import numpy as np
 
-def ik(limb, target_pos, target_ori_y, q0, T_chest_world):
-    """
-    limb: one of ["right_arm", "left_arm", "right_leg", "left_leg"]
-    """
+import numpy as np
 
-    if limb == "right_arm":
-        return ik_right_arm(target_pos, target_ori_y, q0, T_chest_world)
-
-    elif limb == "left_arm":
-        return ik_left_arm(target_pos, target_ori_y, q0, T_chest_world)
-
-    elif limb == "right_leg":
-        return ik_right_leg(target_pos, q0, T_chest_world)
-
-#    elif limb == "left_leg":
-#       return ik_left_leg(target_pos, q0, T_chest_world)
-
-    else:
-        raise ValueError(f"Unknown limb: {limb}")
+import numpy as np
 
 
 def ik_right_arm(target_pos, target_ori_y, q0, T_chest_world):
@@ -324,12 +308,7 @@ def ik_right_leg(target_pos, q0, T_chest_world):
     return q, False
 
 
-
-
-
-
 import mujoco
-import mujoco.viewer
 import numpy as np
 import time
 from pathlib import Path
@@ -446,6 +425,67 @@ def main():
             mujoco.mj_step(model, data)
             viewer.sync()
             time.sleep(max(0, dt - (time.time() - start)))
+
+
+def ik(limb, target_pos, target_ori_y, q0, T_chest_world):
+    """
+    Main IK dispatcher.
+    Selects which IK sub-function to use depending on the limb.
+    """
+
+    if limb == "right_arm":
+        return ik_right_arm(target_pos, target_ori_y, q0, T_chest_world)
+
+    elif limb == "left_arm":
+        return ik_left_arm(target_pos, target_ori_y, q0, T_chest_world)
+
+    elif limb == "right_leg":
+        return ik_right_leg(target_pos, q0, T_chest_world)
+
+    elif limb == "left_leg":
+        # If left_leg IK not implemented, raise or return None
+        raise NotImplementedError("Left leg IK not implemented yet")
+
+    else:
+        raise ValueError(f"Unknown limb: {limb}")
+
+
+def compute_ik(limb_name: str, target_pos):
+    mapping = {
+        "right_hand": "right_arm",
+        "left_hand":  "left_arm",
+        "right_foot": "right_leg",
+        "left_foot":  "left_leg"
+    }
+
+    if limb_name not in mapping:
+        raise ValueError(f"Unknown limb: {limb_name}")
+
+    ik_limb = mapping[limb_name]
+
+    target_ori_y = 0.0
+    q0 = np.zeros(4)
+    T_chest_world = np.eye(4)
+
+    try:
+        q_solution = ik(ik_limb, target_pos, target_ori_y, q0, T_chest_world)
+
+
+        return {
+            "limb": limb_name,
+            "ik_limb": ik_limb,
+            "target": target_pos,
+            "joint_angles": q_solution,
+            "status": "success"
+        }
+    except Exception as e:
+        return {
+            "limb": limb_name,
+            "target": target_pos,
+            "joint_angles": None,
+            "status": f"failed: {e}"
+        }
+
 
 
 if __name__ == "__main__":
