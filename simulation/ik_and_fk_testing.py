@@ -13,7 +13,7 @@ def main():
     # -------------------------------------------------------------
     # 1. Load MuJoCo model
     # -------------------------------------------------------------
-    xml_path = (Path(__file__).parent.parent / "Robot" / "Robot_V3.3.xml").resolve()
+    xml_path = (Path(__file__).parent.parent / "Mujoco" / "Robot_V3.3.xml").resolve()
     model = mujoco.MjModel.from_xml_path(str(xml_path))
     data  = mujoco.MjData(model)
     dt    = model.opt.timestep

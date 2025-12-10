@@ -5,7 +5,7 @@ import time
 
 from init_robot import initialize_robot_pose
 
-xml_path = (Path(__file__).parent.parent / "Robot" / "Robot_V3.3.xml").resolve()
+xml_path = (Path(__file__).parent.parent / "Mujoco" / "Robot_V3.3.xml").resolve()
 
 model = mujoco.MjModel.from_xml_path(str(xml_path))
 data = mujoco.MjData(model)
