@@ -1,492 +1,396 @@
 import numpy as np
+from fk import fk
 
-import numpy as np
 
-import numpy as np
-
-
-def ik_right_arm(target_pos, target_ori_y, q0, T_chest_world):
-
-    max_iter = 60
-    tol = 1e-4
-
-    # --- Joint Limits (example) ---
-    q_min = np.deg2rad(np.array([-90, -60,   0, -130]))
-    q_max = np.deg2rad(np.array([ 90, 120, 132,   35]))
-
-    # --- Reichweitenprüfung ---
-    # Schulterposition aus Brust-FK extrahieren
-    shoulder_world = (T_chest_world @ np.array([-0.0586, 0.021, 0.0330, 1]))[:3]
-    if np.linalg.norm(target_pos - shoulder_world) > 0.21:
-        return q0, False   # klar unerreichbar
-
-    q = q0.copy()
-    alpha = 3.0
-    prev_err = 1e9
-
-    for _ in range(max_iter):
-
-        # ---- FK ----
-        q_full = np.zeros(16)
-        q_full[:4] = q
-        T = fk(q_full, T_chest_world)["hand_r"]
-        pos = T[:3, 3]
-
-        e_pos = target_pos - pos
-        err = np.linalg.norm(e_pos)
-
-        # 1) Erfolg
-        if err < tol:
-            return q, True
-
-        # 2) Keine Verbesserung -> nicht erreichbar
-        if abs(prev_err - err) < 1e-6:
-            return q, False
-
-        prev_err = err
-
-        # ---- Position-Jacobian ----
-        eps = 1e-6
-        J_pos = np.zeros((3,4))
-        for i in range(4):
-            dq = q.copy()
-            dq[i] += eps
-            q_full_eps = np.zeros(16)
-            q_full_eps[:4] = dq
-            T_eps = fk(q_full_eps, T_chest_world)["hand_r"]
-            pos_eps = T_eps[:3, 3]
-            J_pos[:, i] = (pos_eps - pos) / eps
-
-        # ---- DLS Pseudoinverse ----
-        lam = 1e-4
-        J_pinv = np.linalg.inv(J_pos.T @ J_pos + lam*np.eye(4)) @ J_pos.T
-
-        # ---- Primärbewegung ----
-        dq_pos = J_pinv @ e_pos
-
-        # ---- Nullraum-Orientierung ----
-        e_ori = (q[1] + q[2] + q[3]) - target_ori_y
-        grad = np.array([0.0, 1.0, 1.0, 1.0]) * (-e_ori)
-        N = np.eye(4) - J_pinv @ J_pos
-        dq_ori = N @ grad * alpha
-
-        # ---- Gesamtupdate ----
-        q += dq_pos + dq_ori
-
-        # ---- Gelenklimits ----
-        q = np.clip(q, q_min, q_max)
-
-        # 3) Gelenk an Limit & Fehler groß => nicht erreichbar
-        touching_limits = np.any((q <= q_min+1e-4) | (q >= q_max-1e-4))
-        if touching_limits and err > 0.005:
-            return q, False
-
-    # Kein Erfolg nach max_iter
-    return q, False
-
-
-def ik_left_arm(target_pos, target_ori_y, q0, T_chest_world):
-
-    max_iter = 60
-    tol = 1e-4
-
-    # --- Joint Limits (example, mirror of right arm) ---
-    q_min = np.deg2rad(np.array([-90, -60,   0, -130]))
-    q_max = np.deg2rad(np.array([ 90, 120, 132,   35]))
-
-    # --- Reichweitenprüfung (linke Schulter) ---
-    shoulder_offset_l = np.array([0.0586, 0.021, 0.0330, 1.0])
-    shoulder_world = (T_chest_world @ shoulder_offset_l)[:3]
-
-    if np.linalg.norm(target_pos - shoulder_world) > 0.21:
-        return q0, False
-
-    q = q0.copy()
-    alpha = 3.0
-    prev_err = 1e9
-
-    for _ in range(max_iter):
-
-        # ---- FK ----
-        q_full = np.zeros(16)
-        # linker Arm beginnt bei q_full[4:8]
-        q_full[4:8] = q
-
-        T = fk(q_full, T_chest_world)["hand_l"]
-        pos = T[:3, 3]
-
-        e_pos = target_pos - pos
-        err = np.linalg.norm(e_pos)
-
-        # Erfolg
-        if err < tol:
-            return q, True
-
-        # Keine Verbesserung
-        if abs(prev_err - err) < 1e-6:
-            return q, False
-
-        prev_err = err
-
-        # ---- Position-Jacobian ----
-        eps = 1e-6
-        J_pos = np.zeros((3,4))
-        for i in range(4):
-            dq = q.copy()
-            dq[i] += eps
-
-            q_full_eps = np.zeros(16)
-            q_full_eps[4:8] = dq
-
-            T_eps = fk(q_full_eps, T_chest_world)["hand_l"]
-            pos_eps = T_eps[:3, 3]
-            J_pos[:, i] = (pos_eps - pos) / eps
-
-        # ---- DLS Pseudoinverse ----
-        lam = 1e-4
-        J_pinv = np.linalg.inv(J_pos.T @ J_pos + lam*np.eye(4)) @ J_pos.T
-
-        # ---- Primärbewegung ----
-        dq_pos = J_pinv @ e_pos
-
-        # ---- Nullraum-Orientierung: q1+q2+q3 = target_ori_y ----
-        e_ori = (q[1] + q[2] + q[3]) - target_ori_y
-        grad = np.array([0.0, 1.0, 1.0, 1.0]) * (-e_ori)
-        N = np.eye(4) - J_pinv @ J_pos
-        dq_ori = N @ grad * alpha
-
-        # ---- Gesamtupdate ----
-        q += dq_pos + dq_ori
-
-        # ---- Gelenklimits ----
-        q = np.clip(q, q_min, q_max)
-
-        # Limits blockieren & Fehler groß → unlösbar
-        touching_limits = np.any((q <= q_min+1e-4) | (q >= q_max-1e-4))
-        if touching_limits and err > 0.005:
-            return q, False
-
-    return q, False
-
-
-def ik_right_leg(target_pos, q0, T_chest_world):
-    """
-    IK für rechtes Bein mit:
-    - Positionsconstraint (foot_r_ref -> target_pos)
-    - Orientierungsconstraint: Fuß parallel zum Boden
-      -> z-Achse des Fußes soll keine x/y-Komponente haben (z_foot_x ≈ 0, z_foot_y ≈ 0)
-      Yaw um die Welt-z ist frei.
-
-    target_pos: 3D-Zielposition im Weltkoordinatensystem (np.array shape=(3,))
-    q0:         Startgelenkwinkel [hyaw, hpitch, kpitch, ayaw] in rad
-    T_chest_world: 4x4 Pose der Brust im Weltkoordinatensystem
-    """
-
-    max_iter = 60
-    pos_tol = 1e-4       # Toleranz Position
-    ori_tol = 1e-3       # Toleranz Orientierung (z_x, z_y)
-    lam = 1e-4           # DLS-Dämpfung
-    eps = 1e-6           # Schritt für numerische Ableitung
-
-    # yaw, hpitch, kpitch, ayaw – Limits wie zuvor
-    q_min = np.deg2rad(np.array([-100, -20,   0, -90]))
-    q_max = np.deg2rad(np.array([  -70, 120, 140,  90]))
-
-    # Reichweitenprüfung (optional)
-    hip_offset_r = np.array([-0.0434702141, 0.021, -0.0716202141, 1.0])
-    hip_world = (T_chest_world @ hip_offset_r)[:3]
-    Lmax = 0.3
-    if np.linalg.norm(target_pos - hip_world) > Lmax:
-        return q0, False
-
-    # Startpose: aus Singulärität raus
-    # Wenn du lieber extern ein q0 setzt, kommentier die nächste Zeile aus.
-    q0=None
-    q = np.deg2rad(np.array([-90, 20, 40, 0])) if q0 is None else q0.copy()
-
-    prev_err = 1e9
-
-    for _ in range(max_iter):
-        # ---- FK ----
-        q_full = np.zeros(16)
-        q_full[12:16] = q
-        T_foot = fk(q_full, T_chest_world)["foot_r"]
-
-        pos = T_foot[:3, 3]
-        R   = T_foot[:3, :3]
-
-        # Positionsfehler
-        e_pos = target_pos - pos             
-        err_pos = np.linalg.norm(e_pos)
-
-        # Orientierungsfehler: Fuß-z-Achse soll parallel zu Welt-z sein
-        # -> z_foot = R[:,2]; wir wollen z_foot_x = 0, z_foot_y = 0
-        z_foot = R[:, 2]
-        e_ori = -z_foot[:2] * (err_pos < 0.02)
-
-        err_ori = np.linalg.norm(e_ori)
-
-        # Erfolgskriterium: Position UND Orientierung okay
-        if err_pos < pos_tol and err_ori < ori_tol:
-            return q, True
-
-        # Abbruch, wenn sich nichts mehr ändert
-        total_err = err_pos + err_ori
-        if abs(prev_err - total_err) < 1e-7:
-            return q, False
-        prev_err = total_err
-
-        # ---- Jacobian Position (3x4) ----
-        J_pos = np.zeros((3, 4))
-        for i in range(4):
-            dq = q.copy()
-            dq[i] += eps
-
-            q_full_eps = np.zeros(16)
-            q_full_eps[12:16] = dq
-            T_eps = fk(q_full_eps, T_chest_world)["foot_r"]
-            pos_eps = T_eps[:3, 3]
-
-            J_pos[:, i] = (pos_eps - pos) / eps
-        # --- Yaw-DOFs verstärken ---
-        yaw_gain = 1
-        J_pos[:,0] *= yaw_gain   # hip_yaw
-        J_pos[:,3] *= yaw_gain   # ankle_yaw
-
-
-        # ---- Jacobian Orientierung (2x4) ----
-        # Ableitung von [z_foot_x, z_foot_y] nach q
-        J_ori = np.zeros((2, 4))
-        for i in range(4):
-            dq = q.copy()
-            dq[i] += eps
-
-            q_full_eps = np.zeros(16)
-            q_full_eps[12:16] = dq
-            T_eps = fk(q_full_eps, T_chest_world)["foot_r"]
-            R_eps = T_eps[:3, :3]
-            z_eps = R_eps[:, 2]
-
-            # x,y-Komponenten der Fuß-z-Achse
-            z_xy_eps = z_eps[:2]
-            z_xy = z_foot[:2]
-
-            J_ori[:, i] = (z_xy_eps - z_xy) / eps
-
-        # ---- Kombinierte IK-Gleichung ----
-        # Wir bauen:
-        #   [ w_p * J_pos ] dq = [ w_p * e_pos ]
-        #   [ w_o * J_ori ]      [ w_o * e_ori ]
-        w_pos = 1.0
-        # Adaptive Orientierung – aktiviert sich erst wenn wir nahe der Zielposition sind
-        if err_pos > 0.2:     # weiter als 2 cm → Orientation aus
-            w_ori = 0.0
-        else:                  # in 2 cm → Orientation linear aktivieren
-            w_ori = 0.5 * (1.0 - err_pos / 0.02)
-
-
-        J_big = np.vstack((w_pos * J_pos, w_ori * J_ori))     # (5 x 4)
-        e_big = np.hstack((w_pos * e_pos, w_ori * e_ori))     # (5,)
-
-        # ---- DLS-Pseudoinverse ----
-        JtJ = J_big.T @ J_big
-        J_pinv = np.linalg.inv(JtJ + lam * np.eye(4)) @ J_big.T
-
-        dq = J_pinv @ e_big
-
-        # ---- Update ----
-        q += dq
-
-        # ---- Gelenklimits ----
-        q = np.clip(q, q_min, q_max)
-
-        # Frühabbruch wenn Limits und Fehler groß
-        touching_limits = np.any((q <= q_min + 1e-4) | (q >= q_max - 1e-4))
-        if touching_limits and err_pos > 0.005:
-            return q, False
-
-    return q, False
-
-
-import mujoco
-import numpy as np
-import time
-from pathlib import Path
-
-from fk import fk                    # deine FK-Funktion
-
-
-def main():
-    # ----------------------------
-    # 1. MuJoCo Modell laden
-    # ----------------------------
-    xml_path = (Path(__file__).parent.parent / "Robot" / "Robot_V3.3.xml").resolve()
-    model = mujoco.MjModel.from_xml_path(str(xml_path))
-    data = mujoco.MjData(model)
-    dt = model.opt.timestep
-
-    # set position and orientation of the robot base
-    data.qpos[0:3] = [0, -0.3, 0.3]
-    quat = np.zeros(4)
-    mujoco.mju_euler2Quat(quat, np.array([0.0, 0.0, np.deg2rad(180)]), 'xyz')
-    data.qpos[3:7] = quat
-    mujoco.mj_forward(model, data)
-
-
-    # Brustpose: Roboter befindet sich bei Freijoint = 0
-    T_chest_world = np.eye(4)
-    T_chest_world[:3, 3] = data.xpos[model.body('chest').id]
-    T_chest_world[:3,:3] = data.xmat[model.body('chest').id].reshape(3,3)
-
-    # ----------------------------
-    # 2. Zielpunkt definieren
-    # ----------------------------
-    # Einfacher reachable Testpunkt in der Nähe der Schulter
-    target_pos = np.array([0.14, -0.26, 0.12])  
-    target_ori_y = np.deg2rad(0)
-
-    # aktueller Winkelzustand (für IK nicht zwingend nötig)
-    current_q = np.zeros(4)
-
-    # ----------------------------
-    # 3. IK berechnen
-    # ----------------------------
-    q_ik, success = ik("right_leg", target_pos, target_ori_y, current_q, T_chest_world)
-    print("IK Gelenkwinkel:", q_ik)
-
-    # ----------------------------
-    # 4. Gelenkwinkel in MuJoCo setzen
-    # ----------------------------
-    # Reihenfolge wie in deiner FK:
-    joint_names = [
-        "servo_hip_yaw_r_Revolute_hip_yaw_r",
-        "servo_hip_pitch_r_Revolute_hip_pitch_r",
-        "servo_knee_pitch_r_Revolute_knee_pitch_r",
-        "ankle_link_r_Revolute_ankle_yaw_r"
-    ]
-    actuator_names = [
-        "hip_yaw_r",
-        "hip_pitch_r",
-        "knee_pitch_r",
-        "ankle_yaw_r"
-    ]
-
-
-    
-    for i in range(4):
-        # qpos setzen
-        qid = model.joint(joint_names[i]).qposadr
-        data.qpos[qid] = q_ik[i]
-
-        # actuator ctrl setzen (das ist entscheidend!)
-        aid = model.actuator(actuator_names[i]).id
-        data.ctrl[aid] = q_ik[i]
-
-
-    mujoco.mj_forward(model, data)
-
-    target_body_id = model.body('target_marker').mocapid
-    data.mocap_pos[target_body_id] = target_pos
-
-
-    # ----------------------------
-    # 5. FK separat berechnen (zum Vergleich)
-    # ----------------------------
-    # globaler Winkelvektor q für dein FK (Größe 16)
-    q_full = np.zeros(16)
-    q_full[12:16] = q_ik  # rechter Fuß
-
-    fk_res = fk(q_full, T_chest_world)
-    fk_hand = fk_res["foot_r"][:3, 3]
-
-    # ----------------------------
-    # 6. MuJoCo Endeffektorposition aus Simulation
-    # ----------------------------
-    # In deiner XML ist der Referenzpunkt "foot_r_ref"
-    body_id = model.body("foot_r_ref").id
-    sim_pos = data.xpos[body_id]
-
-    # ----------------------------
-    # 7. Ergebnisse ausgeben
-    # ----------------------------
-    print("\n---- Vergleich Fußposition ----")
-    print("Zielposition:       ", target_pos)
-    print("FK Ergebnis:        ", fk_hand)
-    print("MuJoCo Simulation:  ", sim_pos)
-    print("Fehler FK:          ", np.linalg.norm(fk_hand - target_pos))
-    print("Fehler MuJoCo:      ", np.linalg.norm(sim_pos - target_pos))
-    print("IK Erfolg:", success)
-    # ----------------------------
-    # 8. Viewer öffnen (optional)
-    # ----------------------------
-    with mujoco.viewer.launch_passive(model, data) as viewer:
-        while viewer.is_running():
-            start = time.time()
-            mujoco.mj_step(model, data)
-            viewer.sync()
-            time.sleep(max(0, dt - (time.time() - start)))
-
-
+# ======================================================================
+#  Inverse Kinematics (IK) dispatcher
+# ======================================================================
 def ik(limb, target_pos, target_ori_y, q0, T_chest_world):
     """
-    Main IK dispatcher.
-    Selects which IK sub-function to use depending on the limb.
-    """
+    Dispatch function selecting the correct IK routine for each limb.
 
+    Parameters
+    ----------
+    limb : str
+        One of: "right_arm", "left_arm", "right_leg", "left_leg".
+
+    target_pos : ndarray (3,)
+        Desired end-effector position in world coordinates.
+
+    target_ori_y : float
+        Desired end-effector orientation value (summed pitch for arms).
+        Legs ignore this parameter.
+
+    q0 : ndarray (4,)
+        Initial joint guess for the IK iteration.
+
+    T_chest_world : ndarray (4x4)
+        Chest pose in world coordinates (base for FK).
+
+    Returns
+    -------
+    q : ndarray (4,)
+        Joint configuration found by IK.
+
+    success : bool
+        True if IK converged within required tolerances.
+    """
     if limb == "right_arm":
         return ik_right_arm(target_pos, target_ori_y, q0, T_chest_world)
 
-    elif limb == "left_arm":
+    if limb == "left_arm":
         return ik_left_arm(target_pos, target_ori_y, q0, T_chest_world)
 
-    elif limb == "right_leg":
+    if limb == "right_leg":
         return ik_right_leg(target_pos, q0, T_chest_world)
 
-    elif limb == "left_leg":
-        # If left_leg IK not implemented, raise or return None
-        raise NotImplementedError("Left leg IK not implemented yet")
+    if limb == "left_leg":
+        return ik_left_leg(target_pos, q0, T_chest_world)
 
+    raise ValueError(f"Unknown limb: {limb}")
+
+
+# ======================================================================
+#  Right Arm IK  
+# ======================================================================
+def ik_right_arm(target_pos, target_ori_y, q0, T_chest_world):
+    """
+    Inverse kinematics for the right arm.
+    Primary objective: reach desired 3-D position.
+    Secondary objective: approximate orientation using (pitch+elbow+wrist).
+
+    IK returns success only if:
+        - position error < tol_pos
+        - orientation error < ±10 degrees
+
+    Orientation refinement is applied in the Jacobian nullspace.
+    """
+
+    max_iter = 80
+    tol_pos = 1e-3                 # position tolerance (meters)
+    tol_ori = np.deg2rad(10)       # orientation tolerance (radians)
+    eps = 5e-6                     # finite difference step
+    lam = 5e-4                     # Damped least squares regularizer
+
+    # joint limits
+    q_min = np.deg2rad(np.array([-90, -60,   0, -130]))
+    q_max = np.deg2rad(np.array([ 90, 120, 132,   35]))
+
+    q = q0.copy()
+    prev_err = 1e9
+
+    for _ in range(max_iter):
+
+        # ---- Forward kinematics ----
+        q_full = np.zeros(16)
+        q_full[0:4] = q
+        T = fk(q_full, T_chest_world)["hand_r"]
+        pos = T[:3, 3]
+
+        # orientation = sum of pitch joints
+        ori_current = q[1] + q[2] + q[3]
+
+        # errors
+        e_pos = target_pos - pos
+        err_pos = np.linalg.norm(e_pos)
+        e_ori = ori_current - target_ori_y
+
+        # ---- success criteria ----
+        if err_pos < tol_pos and abs(e_ori) < tol_ori:
+            return q, True
+
+        # stagnation -> no convergence
+        if abs(prev_err - err_pos) < 1e-7:
+            return q, False
+        prev_err = err_pos
+
+        # ---- Numerical position Jacobian (3x4) ----
+        J = np.zeros((3, 4))
+        for i in range(4):
+            dq = q.copy()
+            dq[i] += eps
+            q_full_eps = np.zeros(16)
+            q_full_eps[0:4] = dq
+            pos_eps = fk(q_full_eps, T_chest_world)["hand_r"][:3, 3]
+            J[:, i] = (pos_eps - pos) / eps
+
+        # ---- DLS inversion ----
+        J_pinv = np.linalg.inv(J.T @ J + lam * np.eye(4)) @ J.T
+
+        # primary task
+        dq_pos = J_pinv @ e_pos
+
+        # nullspace projector
+        N = np.eye(4) - J_pinv @ J
+
+        # dynamic orientation weight
+        if err_pos < 0.003:
+            alpha = 3.0
+        elif err_pos < 0.01:
+            alpha = 1.0
+        else:
+            alpha = 0.0
+
+        # orientation gradient
+        grad = np.array([0.0, -e_ori, -e_ori, -e_ori])
+
+        dq_ori = alpha * (N @ grad)
+
+        # update
+        q += dq_pos + dq_ori
+        q = np.clip(q, q_min, q_max)
+
+    return q, False
+
+
+# ======================================================================
+#  Left Arm IK  
+# ======================================================================
+def ik_left_arm(target_pos, target_ori_y, q0, T_chest_world):
+    """
+    Inverse kinematics for the left arm.
+    Same logic as right arm:
+        - position is the primary task
+        - orientation refined in nullspace
+        - success only if both pos/orientation tolerances are met
+    """
+
+    max_iter = 80
+    tol_pos = 1e-3              # position tolerance
+    tol_ori = np.deg2rad(10)    # orientation tolerance
+    eps = 5e-6                  # finite difference step
+    lam = 5e-4                  # DLS regularizer
+
+    q_min = np.deg2rad(np.array([-90, -60,   0, -130]))
+    q_max = np.deg2rad(np.array([ 90, 120, 132,   35]))
+
+    q = q0.copy()
+    prev_err = 1e9
+
+    for _ in range(max_iter):
+
+        # FK
+        q_full = np.zeros(16)
+        q_full[4:8] = q
+        T = fk(q_full, T_chest_world)["hand_l"]
+        pos = T[:3, 3]
+
+        ori_current = q[1] + q[2] + q[3]
+
+        e_pos = target_pos - pos
+        err_pos = np.linalg.norm(e_pos)
+        e_ori = ori_current - target_ori_y
+
+        if err_pos < tol_pos and abs(e_ori) < tol_ori:
+            return q, True
+
+        if abs(prev_err - err_pos) < 1e-7:
+            return q, False
+        prev_err = err_pos
+
+        # Jacobian
+        J = np.zeros((3, 4))
+        for i in range(4):
+            dq = q.copy()
+            dq[i] += eps
+            q_full_eps = np.zeros(16)
+            q_full_eps[4:8] = dq
+            pos_eps = fk(q_full_eps, T_chest_world)["hand_l"][:3, 3]
+            J[:, i] = (pos_eps - pos) / eps
+
+        J_pinv = np.linalg.inv(J.T @ J + lam * np.eye(4)) @ J.T
+        dq_pos = J_pinv @ e_pos
+        N = np.eye(4) - J_pinv @ J
+
+        # dynamic orientation weight
+        if err_pos < 0.003:
+            alpha = 3.0
+        elif err_pos < 0.01:
+            alpha = 1.0
+        else:
+            alpha = 0.0
+
+        grad = np.array([0.0, -e_ori, -e_ori, -e_ori])
+        dq_ori = alpha * (N @ grad)
+
+        q += dq_pos + dq_ori
+        q = np.clip(q, q_min, q_max)
+
+    return q, False
+
+
+# ======================================================================
+#  Right Leg IK
+# ======================================================================
+def ik_right_leg(target_pos, q0, T_chest_world):
+    """
+    Inverse kinematics for the right leg.
+    Primary task: foot position.
+    Two nullspace objectives:
+        - keep foot level   (hpitch - kpitch ≈ 0)
+        - keep hip yaw near -90°
+
+    If q0 is near zero (unusable), a stable default configuration is used.
+    """
+
+    max_iter = 80
+    tol = 2e-3         # position tolerance
+    eps = 5e-6         # finite difference step
+    lam = 5e-4         # DLS regularizer
+    alpha_flat = 3.0   # foot leveling weight
+    alpha_hyaw = 2.0   # hip yaw target weight
+
+    q_min = np.deg2rad(np.array([-100, -20, 0, -90]))
+    q_max = np.deg2rad(np.array([ -80, 120, 140, 90]))
+
+    hyaw_target = np.deg2rad(-90)
+
+    q0 = np.array(q0, dtype=float)
+
+    # choose stable default if q0 does not contain meaningful pitch values
+    if abs(q0[1]) < np.deg2rad(1.0) and abs(q0[2]) < np.deg2rad(1.0):
+        q = np.deg2rad(np.array([-90, 20, 30, 0]))
     else:
-        raise ValueError(f"Unknown limb: {limb}")
+        q = q0.copy()
+
+    # reachability check
+    hip_offset = np.array([-0.0434702141, 0.021, -0.0716202141, 1.0])
+    hip_world = (T_chest_world @ hip_offset)[:3]
+    if np.linalg.norm(target_pos - hip_world) > 0.32:
+        return q, False
+
+    prev_err = 1e9
+
+    for _ in range(max_iter):
+
+        q_full = np.zeros(16)
+        q_full[12:16] = q
+        T = fk(q_full, T_chest_world)["foot_r"]
+        pos = T[:3, 3]
+
+        e_pos = target_pos - pos
+        err = np.linalg.norm(e_pos)
+
+        if err < tol:
+            return q, True
+
+        if abs(prev_err - err) < 1e-7:
+            return q, False
+
+        prev_err = err
+
+        # Jacobian
+        J = np.zeros((3, 4))
+        for i in range(4):
+            dq = q.copy()
+            dq[i] += eps
+            q_full_eps = np.zeros(16)
+            q_full_eps[12:16] = dq
+            pos_eps = fk(q_full_eps, T_chest_world)["foot_r"][:3, 3]
+            J[:, i] = (pos_eps - pos) / eps
+
+        J_pinv = np.linalg.inv(J.T @ J + lam * np.eye(4)) @ J.T
+        dq_pos = J_pinv @ e_pos
+
+        N = np.eye(4) - J_pinv @ J
+
+        # nullspace foot leveling
+        e_flat = q[1] - q[2]
+        grad_flat = np.array([0.0, -e_flat, e_flat, 0.0])
+        dq_flat = alpha_flat * (N @ grad_flat)
+
+        # nullspace hip yaw
+        e_hyaw = q[0] - hyaw_target
+        grad_hyaw = np.array([-e_hyaw, 0.0, 0.0, 0.0])
+        dq_hyaw = alpha_hyaw * (N @ grad_hyaw)
+
+        q += dq_pos + dq_flat + dq_hyaw
+        q = np.clip(q, q_min, q_max)
+
+    return q, False
 
 
-def compute_ik(limb_name: str, target_pos):
-    mapping = {
-        "right_hand": "right_arm",
-        "left_hand":  "left_arm",
-        "right_foot": "right_leg",
-        "left_foot":  "left_leg"
-    }
+# ======================================================================
+#  Left Leg IK
+# ======================================================================
+def ik_left_leg(target_pos, q0, T_chest_world):
+    """
+    Inverse kinematics for the left leg.
+    Same structure as the right leg, but mirrored FK and hip yaw sign.
+    """
 
-    if limb_name not in mapping:
-        raise ValueError(f"Unknown limb: {limb_name}")
+    max_iter = 80
+    tol = 2e-3          # position tolerance
+    eps = 5e-6          # finite difference step
+    lam = 5e-4          # DLS regularizer
+    alpha_flat = 3.0    # foot leveling weight
+    alpha_hyaw = 2.0    # hip yaw target weight    
 
-    ik_limb = mapping[limb_name]
+    q_min = np.deg2rad(np.array([-100, -20, 0, -90]))
+    q_max = np.deg2rad(np.array([ -80, 120, 140, 90]))
 
-    target_ori_y = 0.0
-    q0 = np.zeros(4)
-    T_chest_world = np.eye(4)
+    # mirrored hip yaw target (depending on robot convention)
+    hyaw_target = np.deg2rad(-90)
 
-    try:
-        q_solution = ik(ik_limb, target_pos, target_ori_y, q0, T_chest_world)
+    q0 = np.array(q0, dtype=float)
 
+    # choose stable start
+    if abs(q0[1]) < np.deg2rad(1.0) and abs(q0[2]) < np.deg2rad(1.0):
+        q = np.deg2rad(np.array([-90, 20, 30, 0]))
+    else:
+        q = q0.copy()
 
-        return {
-            "limb": limb_name,
-            "ik_limb": ik_limb,
-            "target": target_pos,
-            "joint_angles": q_solution,
-            "status": "success"
-        }
-    except Exception as e:
-        return {
-            "limb": limb_name,
-            "target": target_pos,
-            "joint_angles": None,
-            "status": f"failed: {e}"
-        }
+    # reachability
+    hip_offset = np.array([0.0434702141, 0.021, -0.0716202141, 1.0])
+    hip_world = (T_chest_world @ hip_offset)[:3]
+    if np.linalg.norm(target_pos - hip_world) > 0.32:
+        return q, False
 
+    prev_err = 1e9
 
+    for _ in range(max_iter):
 
-if __name__ == "__main__":
-    main()
+        q_full = np.zeros(16)
+        q_full[8:12] = q
+        T = fk(q_full, T_chest_world)["foot_l"]
+        pos = T[:3, 3]
+
+        e_pos = target_pos - pos
+        err = np.linalg.norm(e_pos)
+
+        if err < tol:
+            return q, True
+
+        if abs(prev_err - err) < 1e-7:
+            return q, False
+
+        prev_err = err
+
+        # Jacobian
+        J = np.zeros((3, 4))
+        for i in range(4):
+            dq = q.copy()
+            dq[i] += eps
+            q_full_eps = np.zeros(16)
+            q_full_eps[8:12] = dq
+            pos_eps = fk(q_full_eps, T_chest_world)["foot_l"][:3, 3]
+            J[:, i] = (pos_eps - pos) / eps
+
+        J_pinv = np.linalg.inv(J.T @ J + lam * np.eye(4)) @ J.T
+        dq_pos = J_pinv @ e_pos
+        N = np.eye(4) - J_pinv @ J
+
+        # foot leveling
+        e_flat = q[1] - q[2]
+        grad_flat = np.array([0.0, -e_flat, e_flat, 0.0])
+        dq_flat = alpha_flat * (N @ grad_flat)
+
+        # hip yaw
+        e_hyaw = q[0] - hyaw_target
+        grad_hyaw = np.array([-e_hyaw, 0.0, 0.0, 0.0])
+        dq_hyaw = alpha_hyaw * (N @ grad_hyaw)
+
+        q += dq_pos + dq_flat + dq_hyaw
+        q = np.clip(q, q_min, q_max)
+
+    return q, False
