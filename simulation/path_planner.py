@@ -63,24 +63,46 @@ def generate_climbing_plan(robot_state: RobotState, route_holds: List[Hold], max
     """
     Génère un plan de montée : une liste de (limb, old_hold, new_hold).
     """
+
     plan = []
+    last_limb = None   # A) éviter deux fois le même limb
 
     for step in range(max_steps):
+
         limb = MOVE_ORDER[step % len(MOVE_ORDER)]
         current_hold = getattr(robot_state, limb)
 
+        # A) éviter de bouger deux fois le même limb
+        if limb == last_limb:
+            continue
+
+        # trouver la prochaine prise
         next_hold = find_next_hold_above(current_hold.pos, route_holds)
+
         if next_hold is None:
             print("No more holds above. Climbing plan complete.")
             break
 
+        # B) éviter les prises trop proches (< 5 cm)
+        dist = np.linalg.norm(next_hold.pos - current_hold.pos)
+        if dist < 0.05:
+            continue
+
+        # C) vérifier que la prise est au-dessus
+        if next_hold.pos[2] <= current_hold.pos[2]:
+            continue
+
         # ajouter le mouvement au plan
         plan.append((limb, current_hold, next_hold))
 
-        # mettre l'état du robot à jour
+        # mettre l’état du robot à jour
         setattr(robot_state, limb, next_hold)
 
+        # mettre à jour le dernier limb bougé
+        last_limb = limb
+
     return plan
+
 
 def main():
     # Charger toutes les prises
