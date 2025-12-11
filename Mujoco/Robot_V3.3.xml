@@ -2,7 +2,7 @@
     
     <include file="wall.xml"/>
     <include file="groundplane.xml"/>
-    <include file="route_ladder_V1.xml"/>
+    <include file="route_climb_easy.xml"/>
 
     <option gravity="0 0 -9.81"/>
     <statistic center="0 0 0.2" extent="0.6"/>
@@ -11,7 +11,7 @@
     <visual>
         <headlight diffuse="0.6 0.6 0.6" ambient="0.3 0.3 0.3" specular="0 0 0"/>
         <rgba haze="0.15 0.25 0.35 1"/>
-        <global azimuth="160" elevation="-20"/>
+        <global azimuth="160" elevation="-20" offwidth="1280" offheight="960"/>
     </visual>
 
     <default>
@@ -60,9 +60,17 @@
     </asset>
     <worldbody>
         <light directional="true" pos="-0.5 0.5 3" dir="0 0 -1" />
+        
+        <!-- Fixed cameras for viewing climbing holds -->
+        <camera name="wall_overview" pos="0 -1.2 0.8" euler="1.4 0 0" fovy="60"/>
+        <camera name="wall_top" pos="0 -1.0 1.5" euler="1.2 0 0" fovy="60"/>
+        <camera name="wall_bottom" pos="0 -1.0 0.3" euler="1.57 0 0" fovy="60"/>
+        <camera name="side_view" pos="-1.0 -0.5 0.8" euler="1.57 0 0.8" fovy="60"/>
 
         <body name="chest" pos="0 0 0" euler="0 0 0">
             <freejoint/>
+            <!-- Robot-mounted camera looking at the wall -->
+            <camera name="robot_cam" pos="0 0.08 0.05" euler="1.57 0 3.14" fovy="90"/>
             <geom name="Chest_geom" type="mesh" mesh="Chest" pos="0 0 0" euler="0 0 0" />
             <inertial mass="0.7823774053524544" pos="-0.0002202141284941914 0.010665315313199322 -0.012037039216329091" fullinertia="0.0009304083466158194 0.0020382370707223204 0.0013134941144002763 -1.3551680123121551e-17 6.403442026300422e-17 4.9787921817003714e-05" />
             <body name="servo_shoulder_yaw_r" pos="-0.058620214128494295 0.020999999999999967 0.03302978684008116" euler="-0.0 -9.957992501029594e-17 -0.0">

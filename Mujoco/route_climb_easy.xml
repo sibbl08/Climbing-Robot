@@ -1,0 +1,292 @@
+<mujoco>
+  <compiler angle="radian" autolimits="true"/>
+  <default>
+
+    <!-- Collision Class -->
+    <default class="hold_collision">
+      <geom type="box"
+            pos="0 -0.013 0.012"
+            size="0.03 0.015 0.002"
+            contype="1" conaffinity="1"
+            rgba="1 0 0 1"
+            solimp="0.99 0.99 0.01"
+            solref="0.01 1"
+            mass="0"/>   
+    </default>
+
+    <!-- Visual Mesh Hold -->
+    <default class="hold_visual">
+      <geom type="mesh"
+            contype="0" conaffinity="0"/> 
+    </default>
+
+  </default>  
+
+
+  <asset>
+    <mesh scale="0.4 0.3 0.4" name="Jug1Center" file="assets/jug3_center.obj"/>
+  </asset>
+
+  
+
+  <worldbody>
+
+  <!-- Foot holds (for reference) -->
+  <body name="foot_l_start" pos="-0.09 0.0 0.1" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="foot_l_start_geom" mesh="Jug1Center" rgba="0.8 0.2 0.8 1" />
+    <geom class="hold_collision"/>
+  </body>
+  <body name="foot_r_start" pos="0.09 0.0 0.1" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="foot_r_start_geom" mesh="Jug1Center" rgba="0 1 0 1" />
+    <geom class="hold_collision"/>
+  </body>
+  
+  <!-- 
+    CLIMBING LADDER - Full wall coverage to peak (z=2.5m)
+    Robot chest starts at z=0.36m, hands at z~0.46m
+    Holds are placed at x=±0.18 to match robot's arm geometry
+    Step height is 0.08m (small steps for reliable IK)
+    Total: 26 pairs of holds (L1-L26, R1-R26) reaching z=2.45m
+  -->
+  
+  <!-- Starting holds - match initial hand positions -->
+  <body name="hold_L1" pos="-0.18 0.0 0.45" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_L1_geom" mesh="Jug1Center" rgba="0.8 0.2 0.8 1" />
+    <geom class="hold_collision"/>
+  </body>
+  <body name="hold_R1" pos="0.18 0.0 0.45" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_R1_geom" mesh="Jug1Center" rgba="0 1 0 1" />
+    <geom class="hold_collision"/>
+  </body>
+  
+  <!-- Climbing sequence - alternating left/right, 8cm step height -->
+  <body name="hold_L2" pos="-0.18 0.0 0.53" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_L2_geom" mesh="Jug1Center" rgba="0.8 0.2 0.8 1" />
+    <geom class="hold_collision"/>
+  </body>
+  <body name="hold_R2" pos="0.18 0.0 0.53" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_R2_geom" mesh="Jug1Center" rgba="0 1 0 1" />
+    <geom class="hold_collision"/>
+  </body>
+  
+  <body name="hold_L3" pos="-0.18 0.0 0.61" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_L3_geom" mesh="Jug1Center" rgba="0.8 0.2 0.8 1" />
+    <geom class="hold_collision"/>
+  </body>
+  <body name="hold_R3" pos="0.18 0.0 0.61" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_R3_geom" mesh="Jug1Center" rgba="0 1 0 1" />
+    <geom class="hold_collision"/>
+  </body>
+  
+  <body name="hold_L4" pos="-0.18 0.0 0.69" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_L4_geom" mesh="Jug1Center" rgba="0.8 0.2 0.8 1" />
+    <geom class="hold_collision"/>
+  </body>
+  <body name="hold_R4" pos="0.18 0.0 0.69" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_R4_geom" mesh="Jug1Center" rgba="0 1 0 1" />
+    <geom class="hold_collision"/>
+  </body>
+  
+  <body name="hold_L5" pos="-0.18 0.0 0.77" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_L5_geom" mesh="Jug1Center" rgba="0.8 0.2 0.8 1" />
+    <geom class="hold_collision"/>
+  </body>
+  <body name="hold_R5" pos="0.18 0.0 0.77" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_R5_geom" mesh="Jug1Center" rgba="0 1 0 1" />
+    <geom class="hold_collision"/>
+  </body>
+  
+  <body name="hold_L6" pos="-0.18 0.0 0.85" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_L6_geom" mesh="Jug1Center" rgba="0.8 0.2 0.8 1" />
+    <geom class="hold_collision"/>
+  </body>
+  <body name="hold_R6" pos="0.18 0.0 0.85" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_R6_geom" mesh="Jug1Center" rgba="0 1 0 1" />
+    <geom class="hold_collision"/>
+  </body>
+  
+  <body name="hold_L7" pos="-0.18 0.0 0.93" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_L7_geom" mesh="Jug1Center" rgba="0.8 0.2 0.8 1" />
+    <geom class="hold_collision"/>
+  </body>
+  <body name="hold_R7" pos="0.18 0.0 0.93" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_R7_geom" mesh="Jug1Center" rgba="0 1 0 1" />
+    <geom class="hold_collision"/>
+  </body>
+  
+  <body name="hold_L8" pos="-0.18 0.0 1.01" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_L8_geom" mesh="Jug1Center" rgba="0.8 0.2 0.8 1" />
+    <geom class="hold_collision"/>
+  </body>
+  <body name="hold_R8" pos="0.18 0.0 1.01" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_R8_geom" mesh="Jug1Center" rgba="0 1 0 1" />
+    <geom class="hold_collision"/>
+  </body>
+  
+  <body name="hold_L9" pos="-0.18 0.0 1.09" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_L9_geom" mesh="Jug1Center" rgba="0.8 0.2 0.8 1" />
+    <geom class="hold_collision"/>
+  </body>
+  <body name="hold_R9" pos="0.18 0.0 1.09" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_R9_geom" mesh="Jug1Center" rgba="0 1 0 1" />
+    <geom class="hold_collision"/>
+  </body>
+  
+  <body name="hold_L10" pos="-0.18 0.0 1.17" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_L10_geom" mesh="Jug1Center" rgba="0.8 0.2 0.8 1" />
+    <geom class="hold_collision"/>
+  </body>
+  <body name="hold_R10" pos="0.18 0.0 1.17" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_R10_geom" mesh="Jug1Center" rgba="0 1 0 1" />
+    <geom class="hold_collision"/>
+  </body>
+
+  <!-- Extended climbing - higher holds -->
+  <body name="hold_L11" pos="-0.18 0.0 1.25" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_L11_geom" mesh="Jug1Center" rgba="0.8 0.2 0.8 1" />
+    <geom class="hold_collision"/>
+  </body>
+  <body name="hold_R11" pos="0.18 0.0 1.25" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_R11_geom" mesh="Jug1Center" rgba="0 1 0 1" />
+    <geom class="hold_collision"/>
+  </body>
+  
+  <body name="hold_L12" pos="-0.18 0.0 1.33" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_L12_geom" mesh="Jug1Center" rgba="0.8 0.2 0.8 1" />
+    <geom class="hold_collision"/>
+  </body>
+  <body name="hold_R12" pos="0.18 0.0 1.33" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_R12_geom" mesh="Jug1Center" rgba="0 1 0 1" />
+    <geom class="hold_collision"/>
+  </body>
+  
+  <body name="hold_L13" pos="-0.18 0.0 1.41" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_L13_geom" mesh="Jug1Center" rgba="0.8 0.2 0.8 1" />
+    <geom class="hold_collision"/>
+  </body>
+  <body name="hold_R13" pos="0.18 0.0 1.41" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_R13_geom" mesh="Jug1Center" rgba="0 1 0 1" />
+    <geom class="hold_collision"/>
+  </body>
+  
+  <body name="hold_L14" pos="-0.18 0.0 1.49" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_L14_geom" mesh="Jug1Center" rgba="0.8 0.2 0.8 1" />
+    <geom class="hold_collision"/>
+  </body>
+  <body name="hold_R14" pos="0.18 0.0 1.49" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_R14_geom" mesh="Jug1Center" rgba="0 1 0 1" />
+    <geom class="hold_collision"/>
+  </body>
+  
+  <body name="hold_L15" pos="-0.18 0.0 1.57" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_L15_geom" mesh="Jug1Center" rgba="0.8 0.2 0.8 1" />
+    <geom class="hold_collision"/>
+  </body>
+  <body name="hold_R15" pos="0.18 0.0 1.57" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_R15_geom" mesh="Jug1Center" rgba="0 1 0 1" />
+    <geom class="hold_collision"/>
+  </body>
+
+  <body name="hold_L16" pos="-0.18 0.0 1.65" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_L16_geom" mesh="Jug1Center" rgba="0.8 0.2 0.8 1" />
+    <geom class="hold_collision"/>
+  </body>
+  <body name="hold_R16" pos="0.18 0.0 1.65" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_R16_geom" mesh="Jug1Center" rgba="0 1 0 1" />
+    <geom class="hold_collision"/>
+  </body>
+  
+  <body name="hold_L17" pos="-0.18 0.0 1.73" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_L17_geom" mesh="Jug1Center" rgba="0.8 0.2 0.8 1" />
+    <geom class="hold_collision"/>
+  </body>
+  <body name="hold_R17" pos="0.18 0.0 1.73" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_R17_geom" mesh="Jug1Center" rgba="0 1 0 1" />
+    <geom class="hold_collision"/>
+  </body>
+  
+  <body name="hold_L18" pos="-0.18 0.0 1.81" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_L18_geom" mesh="Jug1Center" rgba="0.8 0.2 0.8 1" />
+    <geom class="hold_collision"/>
+  </body>
+  <body name="hold_R18" pos="0.18 0.0 1.81" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_R18_geom" mesh="Jug1Center" rgba="0 1 0 1" />
+    <geom class="hold_collision"/>
+  </body>
+  
+  <body name="hold_L19" pos="-0.18 0.0 1.89" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_L19_geom" mesh="Jug1Center" rgba="0.8 0.2 0.8 1" />
+    <geom class="hold_collision"/>
+  </body>
+  <body name="hold_R19" pos="0.18 0.0 1.89" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_R19_geom" mesh="Jug1Center" rgba="0 1 0 1" />
+    <geom class="hold_collision"/>
+  </body>
+  
+  <body name="hold_L20" pos="-0.18 0.0 1.97" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_L20_geom" mesh="Jug1Center" rgba="0.8 0.2 0.8 1" />
+    <geom class="hold_collision"/>
+  </body>
+  <body name="hold_R20" pos="0.18 0.0 1.97" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_R20_geom" mesh="Jug1Center" rgba="0 1 0 1" />
+    <geom class="hold_collision"/>
+  </body>
+
+  <body name="hold_L21" pos="-0.18 0.0 2.05" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_L21_geom" mesh="Jug1Center" rgba="0.8 0.2 0.8 1" />
+    <geom class="hold_collision"/>
+  </body>
+  <body name="hold_R21" pos="0.18 0.0 2.05" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_R21_geom" mesh="Jug1Center" rgba="0 1 0 1" />
+    <geom class="hold_collision"/>
+  </body>
+  
+  <body name="hold_L22" pos="-0.18 0.0 2.13" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_L22_geom" mesh="Jug1Center" rgba="0.8 0.2 0.8 1" />
+    <geom class="hold_collision"/>
+  </body>
+  <body name="hold_R22" pos="0.18 0.0 2.13" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_R22_geom" mesh="Jug1Center" rgba="0 1 0 1" />
+    <geom class="hold_collision"/>
+  </body>
+  
+  <body name="hold_L23" pos="-0.18 0.0 2.21" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_L23_geom" mesh="Jug1Center" rgba="0.8 0.2 0.8 1" />
+    <geom class="hold_collision"/>
+  </body>
+  <body name="hold_R23" pos="0.18 0.0 2.21" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_R23_geom" mesh="Jug1Center" rgba="0 1 0 1" />
+    <geom class="hold_collision"/>
+  </body>
+  
+  <body name="hold_L24" pos="-0.18 0.0 2.29" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_L24_geom" mesh="Jug1Center" rgba="0.8 0.2 0.8 1" />
+    <geom class="hold_collision"/>
+  </body>
+  <body name="hold_R24" pos="0.18 0.0 2.29" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_R24_geom" mesh="Jug1Center" rgba="0 1 0 1" />
+    <geom class="hold_collision"/>
+  </body>
+  
+  <body name="hold_L25" pos="-0.18 0.0 2.37" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_L25_geom" mesh="Jug1Center" rgba="0.8 0.2 0.8 1" />
+    <geom class="hold_collision"/>
+  </body>
+  <body name="hold_R25" pos="0.18 0.0 2.37" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_R25_geom" mesh="Jug1Center" rgba="0 1 0 1" />
+    <geom class="hold_collision"/>
+  </body>
+  
+  <!-- Final holds near the peak (GOLD colored!) -->
+  <body name="hold_L26" pos="-0.18 0.0 2.45" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_L26_geom" mesh="Jug1Center" rgba="1.0 0.8 0.0 1" />
+    <geom class="hold_collision"/>
+  </body>
+  <body name="hold_R26" pos="0.18 0.0 2.45" quat="0.70710678 0.70710678 0.0 0.0">
+    <geom class="hold_visual" name="hold_R26_geom" mesh="Jug1Center" rgba="1.0 0.8 0.0 1" />
+    <geom class="hold_collision"/>
+  </body>
+
+</worldbody>
+
+</mujoco>
