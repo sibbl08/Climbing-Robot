@@ -1,0 +1,8 @@
+{
+    "reportMissingModuleSource": false,
+    "reportMissingTypeStubs": false,
+    "reportUnknownMemberType": false,
+    "reportUnknownVariableType": false,
+    "reportUnknownArgumentType": false,
+    "reportGeneralTypeIssues": false
+}
