@@ -1,6 +1,7 @@
 from holds import load_holds_from_xml, split_start_and_route_holds
 from path_planner import initialize_robot_state, generate_climbing_plan
-from ik import compute_ik
+from ik import ik
+import numpy as np
 from execute_motion import create_motion_step
 
 def generate_motion_steps():
@@ -22,23 +23,50 @@ def generate_motion_steps():
 
     motion_steps = []
 
-    # 4️⃣ For each step in the plan, compute IK and generate motion step
+    # 🔁 mapping PathPlanner → IK
+    mapping = {
+        "right_hand": "right_arm",
+        "left_hand": "left_arm",
+        "right_foot": "right_leg",
+        "left_foot": "left_leg",
+    }
+
+    # 4️⃣ For each step in the plan
     for (limb, old_hold, new_hold) in plan:
 
         target_pos = new_hold.pos
 
-        ik_result = compute_ik(limb, target_pos)
+        if limb not in mapping:
+            continue
 
-        # convert IK → motion step
+        ik_limb = mapping[limb]
+
+        # IK parameters
+        target_ori_y = 0.0
+        q0 = np.zeros(4)
+        T = np.eye(4)
+
+        # ✅ CORRECT IK CALL
+        angles, success = ik(ik_limb, target_pos, target_ori_y, q0, T)
+
+        ik_result = {
+            "limb": limb,
+            "ik_limb": ik_limb,
+            "target": target_pos,
+            "joint_angles": angles,
+            "status": "success" if success else "failed",
+        }
+
+        # Convert IK → motion step
         motion_step = create_motion_step(ik_result)
 
         if motion_step is None:
-            print(f"[WARN] IK failed for {limb}, skipping movement.")
             continue
 
         motion_steps.append(motion_step)
 
     return motion_steps
+
 
 import json
 

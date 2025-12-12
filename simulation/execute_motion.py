@@ -39,6 +39,6 @@ def create_motion_step(ik_result):
     return MotionStep(
         limb=limb,
         joint_indices=get_joint_indices(limb),
-        target_angles=list(joint_angles[0]) if type(joint_angles) in (tuple, list) else list(joint_angles),
+        target_angles=list(joint_angles),
         duration=0.5
     )
