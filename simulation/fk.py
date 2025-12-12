@@ -130,7 +130,7 @@ def fk(q, T_chest_in_world):
     T_Ll = T_Ll @ rot_x(q_kpitch_l)
     T_Ll = T_Ll @ trans(-0.02575, 0, -0.047)
     T_Ll = T_Ll @ rot_z(-q_ayaw_l)
-    T_Ll = T_Ll @ trans(2.12e-10, -0.015375, -0.0464)
+    T_Ll = T_Ll @ trans(0, -0.015375, -0.0464)
     T_Ll = T_Ll @ trans(-0.018, -0.029, -0.004)
     foot_l = T_Ll
 
