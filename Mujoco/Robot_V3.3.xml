@@ -2,7 +2,7 @@
     
     <include file="wall.xml"/>
     <include file="groundplane.xml"/>
-    <include file="route_climb_easy.xml"/>
+    <include file="route_ladder_V1.xml"/>
 
     <option gravity="0 0 -9.81"/>
     <statistic center="0 0 0.2" extent="0.6"/>
