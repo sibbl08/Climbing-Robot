@@ -7,8 +7,8 @@ import numpy as np
 
 @dataclass
 class Hold:
-    name: str          # ex: "foot_l_start", "Jug1Center_5"
-    pos: np.ndarray    # np.array([x, y, z])
+    name: str          
+    pos: np.ndarray    
 
     def __repr__(self) -> str:
         return f"Hold(name={self.name}, pos={self.pos})"
@@ -27,14 +27,14 @@ class Hold:
             return "left"
         if "_r" in n or "right" in n:
             return "right"
-        # sinon: utilise la coordonnée x (x < 0 => gauche, x > 0 => droite)
+        
         if self.pos[0] < 0:
             return "left"
         if self.pos[0] > 0:
             return "right"
         return "center"
 
-# chemin vers le fichier XML de la route
+
 ROUTE_XML_PATH = (
     Path(__file__).resolve().parents[1] / "Robot" / "route_ladder_V1.xml"
 )
@@ -54,15 +54,15 @@ def load_holds_from_xml(xml_path: Path | str = ROUTE_XML_PATH) -> List[Hold]:
 
     holds: List[Hold] = []
 
-    # on parcourt tous les <body> (chaque body = une prise)
+    
     for body in root.iter("body"):
         name = body.get("name")
         pos_str = body.get("pos")
 
         if name is None or pos_str is None:
-            continue  # on ignore les bodies sans position
+            continue 
 
-        # "x y z" -> [x, y, z] en float
+       
         pos_vals = [float(v) for v in pos_str.split()]
         pos = np.array(pos_vals, dtype=float)
 

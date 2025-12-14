@@ -1,37 +1,65 @@
 from holds import load_holds_from_xml, split_start_and_route_holds
 from path_planner import initialize_robot_state, generate_climbing_plan
-import ik  # we will call IK functions from here
-
+import ik 
+from ik import ik
+import numpy as np
 
 def main():
-    # 1️⃣ Charger les holds
+    
     holds = load_holds_from_xml()
     start_holds, route_holds = split_start_and_route_holds(holds)
 
     print("[INFO] Loaded holds:", len(holds))
 
-    # 2️⃣ Initialiser le robot
+   
     robot = initialize_robot_state(start_holds)
 
     print("[INFO] Robot initialized on start holds.")
 
-    # 3️⃣ Générer un plan d'escalade
     plan = generate_climbing_plan(robot, route_holds)
 
     print(f"[INFO] Climbing plan generated with {len(plan)} steps.")
 
-    # 4️⃣ Exécuter le plan avec IK (simulation plus tard)
+
+    mapping = {
+    "right_hand": "right_arm",
+    "left_hand": "left_arm",
+    "right_foot": "right_leg",
+    "left_foot": "left_leg",
+    }
+
+    
     for (limb, old_hold, new_hold) in plan:
         print(f"\n[STEP] Moving {limb} from {old_hold.name} → {new_hold.name}")
         
-        # POSITION de la prise cible
+        
         target_pos = new_hold.pos
         
-        # 4️⃣ Appel IK pour obtenir les angles
+       
         print("[IK] Computing IK for", limb)
-        ik_result = ik.compute_ik(limb, target_pos)
+
+        if limb not in mapping:
+            print(f"[IK] Unknown limb {limb}, skipping")
+            continue
+
+        ik_limb = mapping[limb]
+
+        target_ori_y = 0.0
+        q0 = np.zeros(4)      
+        T = np.eye(4)
+
+        angles, success = ik(ik_limb, target_pos, target_ori_y, q0, T)
+
+        ik_result = {
+            "limb": limb,
+            "ik_limb": ik_limb,
+            "target": target_pos,
+            "joint_angles": angles,
+            "status": "success" if success else "failed"
+        }
 
         print("[IK] Result:", ik_result)
+
 
         from execute_motion import create_motion_step
 

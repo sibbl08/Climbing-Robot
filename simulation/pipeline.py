@@ -11,19 +11,18 @@ def generate_motion_steps():
     Returns a list of MotionStep objects.
     """
 
-    # 1️⃣ Load holds
+  
     holds = load_holds_from_xml()
     start_holds, route_holds = split_start_and_route_holds(holds)
 
-    # 2️⃣ Initialize robot on start holds
+    
     robot_state = initialize_robot_state(start_holds)
 
-    # 3️⃣ Generate the climbing plan
     plan = generate_climbing_plan(robot_state, route_holds)
 
     motion_steps = []
 
-    # 🔁 mapping PathPlanner → IK
+    
     mapping = {
         "right_hand": "right_arm",
         "left_hand": "left_arm",
@@ -31,7 +30,6 @@ def generate_motion_steps():
         "left_foot": "left_leg",
     }
 
-    # 4️⃣ For each step in the plan
     for (limb, old_hold, new_hold) in plan:
 
         target_pos = new_hold.pos
@@ -41,12 +39,12 @@ def generate_motion_steps():
 
         ik_limb = mapping[limb]
 
-        # IK parameters
+        
         target_ori_y = 0.0
         q0 = np.zeros(4)
         T = np.eye(4)
 
-        # ✅ CORRECT IK CALL
+       
         angles, success = ik(ik_limb, target_pos, target_ori_y, q0, T)
 
         ik_result = {
@@ -57,7 +55,7 @@ def generate_motion_steps():
             "status": "success" if success else "failed",
         }
 
-        # Convert IK → motion step
+       
         motion_step = create_motion_step(ik_result)
 
         if motion_step is None:

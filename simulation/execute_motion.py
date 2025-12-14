@@ -5,7 +5,7 @@ class MotionStep:
     limb: str
     joint_indices: list
     target_angles: list
-    duration: float = 0.5  # default duration of the movement
+    duration: float = 0.5 
 
 def get_joint_indices(limb: str):
     
@@ -14,7 +14,7 @@ def get_joint_indices(limb: str):
     YOU MUST ADAPT these indices based on your robot model.
     """
     mapping = {
-        "right_hand": [7, 8, 9, 10],    # example, adjust!
+        "right_hand": [7, 8, 9, 10],  
         "left_hand":  [11, 12, 13, 14],
         "right_foot": [3, 4, 5, 6],
         "left_foot":  [15, 16, 17, 18]
@@ -34,7 +34,7 @@ def create_motion_step(ik_result):
     joint_angles = ik_result["joint_angles"]
 
     if joint_angles is None:
-        return None  # IK failed
+        return None 
 
     return MotionStep(
         limb=limb,
